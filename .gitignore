@@ -1,4 +1,5 @@
-secrets.sh
+*secrets*
 env
+*pyc
 ZillowNeighborhoods-CA/
 test/
