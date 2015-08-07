@@ -3,3 +3,5 @@ env
 *pyc
 ZillowNeighborhoods-CA/
 test/
+*OLD*
+*temp*

@@ -1,12 +1,14 @@
 """Models and database functions for PropShop project."""
 
+import sys
+import os
 from flask_sqlalchemy import SQLAlchemy
+#from pyzillow import pyzillow
 import xmltodict
-import urllib2
-import xml.etree.ElementTree as ET
 import json
 import requests
-
+from urllib2 import Request, urlopen, URLError
+from xml.dom import minidom
 
 
 # This is the connection to the SQLite database; we're getting this through
@@ -65,7 +67,7 @@ class Property(db.Model):
     finishedSqFt = db.Column(db.Integer)
     bathrooms = db.Column(db.Float)
     bedrooms = db.Column(db.Integer)
-    totalrooms = db.Column(db.Integer)
+    totalRooms = db.Column(db.Integer)
     lastSoldDate = db.Column(db.DateTime)
     lastSoldPrice = db.Column(db.Integer)
     z_amount = db.Column(db.Integer)
@@ -80,26 +82,6 @@ class Property(db.Model):
     region_type = db.Column(db.String(10))
     zindexValue = db.Column(db.Integer) # not sure what this is but we'll leave it in for now
     neighborhood_url = db.Column(db.String(100)) 
-
-
-    # @classmethod
-    # def parse_xlm(cls, url_path):
-    #     #url_path = 'http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz1a5p2n39v63_anh8k&address=4113+Park+Blvd&citystatezip=Palo+Alto%2C+CA%22'
-    #     raw_xml = urllib2.urlopen(url_path).read().strip()
-    #     root = ET.fromstring(raw_xml)
-
-    #     #parse xml elements
-    #     zpid = root.find('zpid').text
-    #     homedetails = root.find('zpid').text
-    #     street = root.find('street').text
-    #     zipcode = root.find('zipcode').text
-    #     city = root.find('city').text
-    #     state = root.find('state').text
-
-
-
-    
- 
 
 
     def __repr__(self):
@@ -119,7 +101,7 @@ class UserProperty(db.Model):
 
     user_property_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    zpid = db.Column(db.Integer, db.ForeignKey('movies.movie_id'))
+    zpid = db.Column(db.Integer, db.ForeignKey('property.zpid'))
     time_saved = db.Column(db.DateTime)
 
 
@@ -138,21 +120,116 @@ class UserProperty(db.Model):
             self.user_property_id, self.user_id, self.zpid)
 
 
-##############################################################################
-# Helper functions
 
-def request_and_convert_property(url): #takes url now, but will take query arguments
-    """ Takes an xml object from the Zillow API call and returns a dictionary/json """
-    xml_object = requests.get("http://www.zillow.com/webservice/GetDeepSearchResults.htm?<KEY>&address=4113+Park+Blvd&citystatezip=Palo+Alto%2C+CA")
-    print xml_object.status_code
-    property_dict_string = json.dumps(xmltodict.parse(xml_object.text), indent=4)
-    print property_dict_string
-    property_dict = json.loads(property_dict_string)
-    # print property_dict
-    # we only care about results
-    property_dict = property_dict['SearchResults:searchresults']['response']
-    return property_dict
+
+##############################################################################
+# Helper functions for parsing (from Denise's SunBear Github)
+
+def getText(nodelist):
+    rc = []
+    for node in nodelist:
+        if node.nodeType == node.TEXT_NODE:
+            rc.append(node.data)
+    return ''.join(rc)
+
+
+def handleTok(tokenlist):
+    texts = ""
+    for token in tokenlist:
+        texts += " "+ getText(token.childNodes)
+    return texts
+
+###############################################################
+###############################################################
+
+###############################################################
+
+# ZILLOW
+
+### DETAILS PER HOUSE ###
+# http://www.zillow.com/howto/api/GetDeepSearchResults.htm
+# input:  address and zip
+# output: lattitude and longitude (could then be inputed into PV WATTS)
+#           valutation range (high and low)
+#           home value index -- avg home value in neighborhood?
+#           ZPID = a zillow id (per house). used for the other zillow APIs.
+#           Tax assessment,Yearbuilt,lotSizeSqFt,finishedSqFt,Bedrooms
+#  *** FIPScounty *** = matches county codes in maps, census data, etc
+
+
+
+def data_per_house():
+    #Zillow_key = os.environ["ZILLOW_ZWSID"]
+
+
+    # get Deep Search Results data and parse
+    url_zillow_house = "http://www.zillow.com/webservice/GetDeepSearchResults.htm?<KEY>&address=<ADDRESS>"
+    response = urlopen(url_zillow_house)
+    dom_zillow_house = minidom.parse(response)
+
+
+    # retrieve example data by tag
+    for node in dom_zillow_house.getElementsByTagName("result"):
+
+        zpid = (handleTok(node.getElementsByTagName('zpid'))).encode("utf8").strip()
+        homedetails = (handleTok(node.getElementsByTagName('homedetails'))).encode("utf8").strip()
+        street = (handleTok(node.getElementsByTagName('street'))).encode("utf8").strip()
+        zipcode = (handleTok(node.getElementsByTagName('zipcode'))).encode("utf8").strip()
+        city = (handleTok(node.getElementsByTagName('city'))).encode("utf8").strip()
+        state = (handleTok(node.getElementsByTagName('state'))).encode("utf8").strip()
+        
+        latitude = (handleTok(node.getElementsByTagName('latitude'))).encode("utf8").strip()
+        longitude = (handleTok(node.getElementsByTagName('longitude'))).encode("utf8").strip()
+        FIPScounty = (handleTok(node.getElementsByTagName('FIPScounty'))).encode("utf8").strip()
+        useCode = (handleTok(node.getElementsByTagName('useCode'))).encode("utf8").strip()
+        
+        taxAssessmentYear = (handleTok(node.getElementsByTagName('taxAssessmentYear'))).encode("utf8").strip()
+        taxAssessment = (handleTok(node.getElementsByTagName('taxAssessment'))).encode("utf8").strip()
+        yearBuilt = (handleTok(node.getElementsByTagName('yearBuilt'))).encode("utf8").strip()
+        lotSizeSqFt = (handleTok(node.getElementsByTagName('lotSizeSqFt'))).encode("utf8").strip()
+        finishedSqFt = (handleTok(node.getElementsByTagName('finishedSqFt'))).encode("utf8").strip()
+        bedrooms = (handleTok(node.getElementsByTagName('bedrooms'))).encode("utf8").strip()
+        bathrooms = (handleTok(node.getElementsByTagName('bathrooms'))).encode("utf8").strip()
+        totalRooms = (handleTok(node.getElementsByTagName('totalRooms'))).encode("utf8").strip()
+        
+        lastSoldDate = (handleTok(node.getElementsByTagName('lastSoldDate'))).encode("utf8").strip()
+        lastSoldPrice = (handleTok(node.getElementsByTagName('lastSoldPrice'))).encode("utf8").strip()
+        z_amount = (handleTok(node.getElementsByTagName('amount'))).encode("utf8").strip()
+
+
+
+    print "zpid:", zpid
+    print "homedetails:", homedetails
+    print "street:", street
+    print "city:", city
+    print "state:", state
+    print "zipcode:", zipcode
+
+    print "latitude:", latitude
+    print "longitude:", longitude
+    print "FIPScounty:", FIPScounty
+    print "useCode:", useCode
     
+    print "taxAssessmentYear:", taxAssessmentYear
+    print "taxAssessment:", taxAssessment
+    print "year built:", yearBuilt
+    print "lotSizeSqFt:", lotSizeSqFt
+    print "Square feet:", finishedSqFt
+    print "number of bedrooms:", bedrooms
+    print "number of bathrooms:", bathrooms
+    print "number of total rooms:", totalRooms
+
+    print "Last Sold Date:", lastSoldDate
+    print "lastSoldPrice:", lastSoldPrice
+    print "zestimate amount:", z_amount
+
+    #MAYBE TO DO: Get the Additional Updated Property Details
+
+
+#data_per_house()
+
+
+
 
 
 
@@ -175,10 +252,10 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
-    result = request_and_convert_property("test")
-    print ''
-    print ''
-    print "I got %s results for this" % len(result['results'])
-    print json.dumps(result, indent=4)
-    for result in result['results']:
-        print result['result']
+    # result = request_and_convert_property("test")
+    # print ''
+    # print ''
+    # print "I got %s results for this" % len(result['results'])
+    # print json.dumps(result, indent=4)
+    # for result in result['results']['result']:
+    #     print result
