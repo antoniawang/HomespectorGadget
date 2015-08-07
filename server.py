@@ -7,6 +7,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Property, UserProperty
 
+import subprocess
 
 app = Flask(__name__)
 
@@ -91,6 +92,16 @@ def logout():
     flash("Logged Out.")
     return redirect("/")
 
+
+######################################################
+@app.route('/search', methods=['GET'])
+def parse_address_search():
+    """Parses the address for API call"""
+    raw_address_text = request.args.get("address_search")
+    ###INSTALL usaddress API to parse
+
+
+    return render_template("address-confirmation.html", raw_address_text=raw_address_text)
 
 # @app.route("/users")
 # def user_list():

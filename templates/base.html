@@ -81,6 +81,20 @@
             <ul class="nav navbar-nav">
                 <li><a href="/property-table">Compare Properties</a></li>
             </ul>
+
+        <form action="search">
+            <div class="form-group">
+              <label>
+              Enter an address 
+              <input type="text" name="address_search" class="form-control">
+              </label>
+             </div>
+
+            <div class="form-group">
+              <input type="submit" value="Search" class="btn btn-danger">
+            </div>
+        </form>         
+
             <ul class="nav navbar-nav navbar-right">
               {% if "user_id" in session %}
                   <li><a href="/users/{{ session['user_id'] }}">Profile</a></li>

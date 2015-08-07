@@ -9,7 +9,7 @@ import json
 import requests
 from urllib2 import Request, urlopen, URLError
 from xml.dom import minidom
-
+import urllib
 
 # This is the connection to the SQLite database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -43,7 +43,7 @@ class User(db.Model):
 class Property(db.Model):
     """Property on PropShop website."""
 
-    __tablename__ = "properties"
+    # __tablename__ = "properties"
 
     #Main property information
     zpid = db.Column(db.Integer, primary_key=True)
@@ -82,6 +82,80 @@ class Property(db.Model):
     region_type = db.Column(db.String(10))
     zindexValue = db.Column(db.Integer) # not sure what this is but we'll leave it in for now
     neighborhood_url = db.Column(db.String(100)) 
+
+    def load_from_address(self, address, citystatezip):
+        Zillow_key = os.environ["ZILLOW_ZWSID"]
+
+################################################
+#Fix after creating a parsed searched text
+################################################
+        # get Deep Search Results data and parse
+        url_zillow_house = "http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=%s&address=%s&citystatezip=%s>" % (Zillow_key) #NEED TO CREATE SEARCH TO PARSE
+        print url_zillow_house
+        response = urlopen(url_zillow_house)
+        print response.read()
+        dom_zillow_house = minidom.parse(response)
+
+        # retrieve example data by tag
+        for node in dom_zillow_house.getElementsByTagName("result"):
+
+            zpid = (handleTok(node.getElementsByTagName('zpid'))).encode("utf8").strip()
+            homedetails = (handleTok(node.getElementsByTagName('homedetails'))).encode("utf8").strip()
+            street = (handleTok(node.getElementsByTagName('street'))).encode("utf8").strip()
+            zipcode = (handleTok(node.getElementsByTagName('zipcode'))).encode("utf8").strip()
+            city = (handleTok(node.getElementsByTagName('city'))).encode("utf8").strip()
+            state = (handleTok(node.getElementsByTagName('state'))).encode("utf8").strip()
+            
+            latitude = (handleTok(node.getElementsByTagName('latitude'))).encode("utf8").strip()
+            longitude = (handleTok(node.getElementsByTagName('longitude'))).encode("utf8").strip()
+            FIPScounty = (handleTok(node.getElementsByTagName('FIPScounty'))).encode("utf8").strip()
+            useCode = (handleTok(node.getElementsByTagName('useCode'))).encode("utf8").strip()
+            
+            taxAssessmentYear = (handleTok(node.getElementsByTagName('taxAssessmentYear'))).encode("utf8").strip()
+            taxAssessment = (handleTok(node.getElementsByTagName('taxAssessment'))).encode("utf8").strip()
+            yearBuilt = (handleTok(node.getElementsByTagName('yearBuilt'))).encode("utf8").strip()
+            lotSizeSqFt = (handleTok(node.getElementsByTagName('lotSizeSqFt'))).encode("utf8").strip()
+            finishedSqFt = (handleTok(node.getElementsByTagName('finishedSqFt'))).encode("utf8").strip()
+            bedrooms = (handleTok(node.getElementsByTagName('bedrooms'))).encode("utf8").strip()
+            bathrooms = (handleTok(node.getElementsByTagName('bathrooms'))).encode("utf8").strip()
+            totalRooms = (handleTok(node.getElementsByTagName('totalRooms'))).encode("utf8").strip()
+            
+            lastSoldDate = (handleTok(node.getElementsByTagName('lastSoldDate'))).encode("utf8").strip()
+            lastSoldPrice = (handleTok(node.getElementsByTagName('lastSoldPrice'))).encode("utf8").strip()
+            z_amount = (handleTok(node.getElementsByTagName('amount'))).encode("utf8").strip()
+
+
+
+        print "zpid:", zpid
+        print "homedetails:", homedetails
+        print "street:", street
+        print "city:", city
+        print "state:", state
+        print "zipcode:", zipcode
+
+        print "latitude:", latitude
+        print "longitude:", longitude
+        print "FIPScounty:", FIPScounty
+        print "useCode:", useCode
+        
+        print "taxAssessmentYear:", taxAssessmentYear
+        print "taxAssessment:", taxAssessment
+        print "year built:", yearBuilt
+        print "lotSizeSqFt:", lotSizeSqFt
+        print "Square feet:", finishedSqFt
+        print "number of bedrooms:", bedrooms
+        print "number of bathrooms:", bathrooms
+        print "number of total rooms:", totalRooms
+
+        print "Last Sold Date:", lastSoldDate
+        print "lastSoldPrice:", lastSoldPrice
+        print "zestimate amount:", z_amount
+
+        #MAYBE TO DO: Get the Additional Updated Property Details
+
+
+    #data_per_house()
+
 
 
     def __repr__(self):
@@ -158,76 +232,6 @@ def handleTok(tokenlist):
 
 
 
-def data_per_house():
-    #Zillow_key = os.environ["ZILLOW_ZWSID"]
-
-
-    # get Deep Search Results data and parse
-    url_zillow_house = "http://www.zillow.com/webservice/GetDeepSearchResults.htm?<KEY>&address=<ADDRESS>"
-    response = urlopen(url_zillow_house)
-    dom_zillow_house = minidom.parse(response)
-
-
-    # retrieve example data by tag
-    for node in dom_zillow_house.getElementsByTagName("result"):
-
-        zpid = (handleTok(node.getElementsByTagName('zpid'))).encode("utf8").strip()
-        homedetails = (handleTok(node.getElementsByTagName('homedetails'))).encode("utf8").strip()
-        street = (handleTok(node.getElementsByTagName('street'))).encode("utf8").strip()
-        zipcode = (handleTok(node.getElementsByTagName('zipcode'))).encode("utf8").strip()
-        city = (handleTok(node.getElementsByTagName('city'))).encode("utf8").strip()
-        state = (handleTok(node.getElementsByTagName('state'))).encode("utf8").strip()
-        
-        latitude = (handleTok(node.getElementsByTagName('latitude'))).encode("utf8").strip()
-        longitude = (handleTok(node.getElementsByTagName('longitude'))).encode("utf8").strip()
-        FIPScounty = (handleTok(node.getElementsByTagName('FIPScounty'))).encode("utf8").strip()
-        useCode = (handleTok(node.getElementsByTagName('useCode'))).encode("utf8").strip()
-        
-        taxAssessmentYear = (handleTok(node.getElementsByTagName('taxAssessmentYear'))).encode("utf8").strip()
-        taxAssessment = (handleTok(node.getElementsByTagName('taxAssessment'))).encode("utf8").strip()
-        yearBuilt = (handleTok(node.getElementsByTagName('yearBuilt'))).encode("utf8").strip()
-        lotSizeSqFt = (handleTok(node.getElementsByTagName('lotSizeSqFt'))).encode("utf8").strip()
-        finishedSqFt = (handleTok(node.getElementsByTagName('finishedSqFt'))).encode("utf8").strip()
-        bedrooms = (handleTok(node.getElementsByTagName('bedrooms'))).encode("utf8").strip()
-        bathrooms = (handleTok(node.getElementsByTagName('bathrooms'))).encode("utf8").strip()
-        totalRooms = (handleTok(node.getElementsByTagName('totalRooms'))).encode("utf8").strip()
-        
-        lastSoldDate = (handleTok(node.getElementsByTagName('lastSoldDate'))).encode("utf8").strip()
-        lastSoldPrice = (handleTok(node.getElementsByTagName('lastSoldPrice'))).encode("utf8").strip()
-        z_amount = (handleTok(node.getElementsByTagName('amount'))).encode("utf8").strip()
-
-
-
-    print "zpid:", zpid
-    print "homedetails:", homedetails
-    print "street:", street
-    print "city:", city
-    print "state:", state
-    print "zipcode:", zipcode
-
-    print "latitude:", latitude
-    print "longitude:", longitude
-    print "FIPScounty:", FIPScounty
-    print "useCode:", useCode
-    
-    print "taxAssessmentYear:", taxAssessmentYear
-    print "taxAssessment:", taxAssessment
-    print "year built:", yearBuilt
-    print "lotSizeSqFt:", lotSizeSqFt
-    print "Square feet:", finishedSqFt
-    print "number of bedrooms:", bedrooms
-    print "number of bathrooms:", bathrooms
-    print "number of total rooms:", totalRooms
-
-    print "Last Sold Date:", lastSoldDate
-    print "lastSoldPrice:", lastSoldPrice
-    print "zestimate amount:", z_amount
-
-    #MAYBE TO DO: Get the Additional Updated Property Details
-
-
-#data_per_house()
-
 
 
 
@@ -252,10 +256,4 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
-    # result = request_and_convert_property("test")
-    # print ''
-    # print ''
-    # print "I got %s results for this" % len(result['results'])
-    # print json.dumps(result, indent=4)
-    # for result in result['results']['result']:
-    #     print result
+    #my_property = Property().load_from_address(address=, citystatezip=)
