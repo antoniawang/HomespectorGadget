@@ -1,6 +1,12 @@
 """Models and database functions for PropShop project."""
 
 from flask_sqlalchemy import SQLAlchemy
+import xmltodict
+import urllib2
+import xml.etree.ElementTree as ET
+import json
+import requests
+
 
 
 # This is the connection to the SQLite database; we're getting this through
@@ -31,8 +37,6 @@ class User(db.Model):
 
 
 
-import urllib2
-import xml.etree.ElementTree as ET
 
 class Property(db.Model):
     """Property on PropShop website."""
@@ -78,19 +82,19 @@ class Property(db.Model):
     neighborhood_url = db.Column(db.String(100)) 
 
 
-    @classmethod
-    def parse_xlm(cls, url_path):
-        #url_path = 'http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz1a5p2n39v63_anh8k&address=4113+Park+Blvd&citystatezip=Palo+Alto%2C+CA%22'
-        raw_xml = urllib2.urlopen(url_path).read().strip()
-        root = ET.fromstring(raw_xml)
+    # @classmethod
+    # def parse_xlm(cls, url_path):
+    #     #url_path = 'http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz1a5p2n39v63_anh8k&address=4113+Park+Blvd&citystatezip=Palo+Alto%2C+CA%22'
+    #     raw_xml = urllib2.urlopen(url_path).read().strip()
+    #     root = ET.fromstring(raw_xml)
 
-        #parse xml elements
-        zpid = root.find('zpid').text
-        homedetails = root.find('zpid').text
-        street = root.find('street').text
-        zipcode = root.find('zipcode').text
-        city = root.find('city').text
-        state = root.find('state').text
+    #     #parse xml elements
+    #     zpid = root.find('zpid').text
+    #     homedetails = root.find('zpid').text
+    #     street = root.find('street').text
+    #     zipcode = root.find('zipcode').text
+    #     city = root.find('city').text
+    #     state = root.find('state').text
 
 
 
@@ -137,6 +141,24 @@ class UserProperty(db.Model):
 ##############################################################################
 # Helper functions
 
+def request_and_convert_property(url): #takes url now, but will take query arguments
+    """ Takes an xml object from the Zillow API call and returns a dictionary/json """
+    xml_object = requests.get("http://www.zillow.com/webservice/GetDeepSearchResults.htm?<KEY>&address=4113+Park+Blvd&citystatezip=Palo+Alto%2C+CA")
+    print xml_object.status_code
+    property_dict_string = json.dumps(xmltodict.parse(xml_object.text), indent=4)
+    print property_dict_string
+    property_dict = json.loads(property_dict_string)
+    # print property_dict
+    # we only care about results
+    property_dict = property_dict['SearchResults:searchresults']['response']
+    return property_dict
+    
+
+
+
+
+
+
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
@@ -153,3 +175,10 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
+    result = request_and_convert_property("test")
+    print ''
+    print ''
+    print "I got %s results for this" % len(result['results'])
+    print json.dumps(result, indent=4)
+    for result in result['results']:
+        print result['result']
