@@ -5,3 +5,5 @@ ZillowNeighborhoods-CA/
 test/
 *OLD*
 *temp*
+seed.py
+*.db

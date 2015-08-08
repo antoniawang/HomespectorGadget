@@ -7,7 +7,11 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Property, UserProperty
 
-import subprocess
+#import subprocess
+
+import usaddress
+
+from collections import OrderedDict
 
 app = Flask(__name__)
 
@@ -30,34 +34,43 @@ def index():
 def register_form():
     """Show form for user signup."""
 
-    return render_template("registration-form.html")
+    return render_template('registration-form.html')
 
 
 @app.route('/register', methods=['POST'])
 def register_process():
     """Process registration."""
 
-    # Get form variables
-    fname = request.form["fname"]
-    lname = request.form["lname"]
-    email = request.form["email"]
-    password = request.form["password"]
-    zipcode = request.form["zipcode"]
+    user_email = request.form['email']
+    user = User.query.filter(User.email == user_email).first()
+    print user, "**********************************************"
 
-    new_user = User(fname=fname, lname=lname, email=email, password=password, zipcode=zipcode)
+    if user is None:
+        # Get form variables
+        fname = request.form["fname"]
+        lname = request.form["lname"]
+        email = request.form["email"]
+        password = request.form["password"]
+        zipcode = request.form["zipcode"]
 
-    db.session.add(new_user)
-    db.session.commit()
+        new_user = User(fname=fname, lname=lname, email=email, password=password, zipcode=zipcode)
 
-    flash("User %s added." % email)
-    return redirect("/")
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("User %s added." % email)
+        return redirect("/")
+
+    else:
+        flash("This email has already been registered.\nPlease use a different email.") 
+        return redirect("/register")
 
 
 @app.route('/login', methods=['GET'])
 def login_form():
     """Show login form."""
 
-    return render_template("login_form.html")
+    return render_template("login-form.html")
 
 
 @app.route('/login', methods=['POST'])
@@ -80,8 +93,8 @@ def login_process():
 
     session["user_id"] = user.user_id
 
-    flash("Logged in")
-    return redirect("/users/%s" % user.user_id)
+    flash("Hello, %s!" % user.fname)
+    return redirect("/") #Change redirect path later
 
 
 @app.route('/logout')
@@ -98,19 +111,14 @@ def logout():
 def parse_address_search():
     """Parses the address for API call"""
     raw_address_text = request.args.get("address_search")
-    ###INSTALL usaddress API to parse
-
+    raw_address_parsed = usaddress.tag(raw_address_text)
+    print raw_address_parsed,"*************************"
+    print type(raw_address_parsed), "**************************"
+    address_dict = dict(raw_address_parsed) #THE RETURNED OBJECT IS NOT AN ORDERED DICT BUT TUPLE. NEED TO FIX
 
     return render_template("address-confirmation.html", raw_address_text=raw_address_text)
 
-# @app.route("/users")
-# def user_list():
-#     """Show list of users."""
-
-#     users = User.query.all()
-#     return render_template("user_list.html", users=users)
-
-
+# USE THIS TO CREATE THE MY PROFILE PAGE
 # @app.route("/users/<int:user_id>")
 # def user_detail(user_id):
 #     """Show info about user."""
@@ -126,55 +134,6 @@ def get_propeties_list():
     #movies = Movie.query.order_by('title').all()
     return render_template("property-table.html")
 
-
-# @app.route("/movies/<int:movie_id>", methods=['GET'])
-# def movie_detail(movie_id):
-#     """Show info about movie.
-
-#     If a user is logged in, let them add/edit a rating.
-#     """
-
-#     movie = Movie.query.get(movie_id)
-
-#     user_id = session.get("user_id")
-
-#     if user_id:
-#         user_rating = Rating.query.filter_by(
-#             movie_id=movie_id, user_id=user_id).first()
-
-#     else:
-#         user_rating = None
-
-#     return render_template("movie.html",
-#                            movie=movie,
-#                            user_rating=user_rating)
-
-
-# @app.route("/movies/<int:movie_id>", methods=['POST'])
-# def movie_detail_process(movie_id):
-#     """Add/edit a rating."""
-
-#     # Get form variables
-#     score = int(request.form["score"])
-
-#     user_id = session.get("user_id")
-#     if not user_id:
-#         raise Exception("No user logged in.")
-
-#     rating = Rating.query.filter_by(user_id=user_id, movie_id=movie_id).first()
-
-#     if rating:
-#         rating.score = score
-#         flash("Rating updated.")
-
-#     else:
-#         rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
-#         flash("Rating added.")
-#         db.session.add(rating)
-
-#     db.session.commit()
-
-#     return redirect("/movies/%s" % movie_id)
 
 
 if __name__ == "__main__":

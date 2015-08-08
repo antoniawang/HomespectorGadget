@@ -3,7 +3,6 @@
 import sys
 import os
 from flask_sqlalchemy import SQLAlchemy
-#from pyzillow import pyzillow
 import xmltodict
 import json
 import requests
@@ -16,7 +15,6 @@ import urllib
 # object, where we do most of our interactions (like committing, etc.)
 
 db = SQLAlchemy()
-
 
 ##############################################################################
 # Model definitions
@@ -31,6 +29,7 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=True)
     fname = db.Column(db.String(20), nullable=True)
     lname = db.Column(db.String(20), nullable=True)
+    zipcode = db.Column(db.String(5), nullable=True)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -43,7 +42,7 @@ class User(db.Model):
 class Property(db.Model):
     """Property on PropShop website."""
 
-    # __tablename__ = "properties"
+    __tablename__ = "properties"
 
     #Main property information
     zpid = db.Column(db.Integer, primary_key=True)
@@ -71,17 +70,21 @@ class Property(db.Model):
     lastSoldDate = db.Column(db.DateTime)
     lastSoldPrice = db.Column(db.Integer)
     z_amount = db.Column(db.Integer)
-    z_last_updated = db.Column(db.DateTime)
-    z_oneWeekChange_deprecated = db.Column(db.Boolean)
-    z_valueChange = db.Column(db.Integer)
-    z_valuationRange_low = db.Column(db.Integer)
-    z_valuationRante_high = db.Column(db.Integer)
-    z_percentile = db.Column(db.Integer)
-    region_name  = db.Column(db.String(59))
-    region_id = db.Column(db.String(5)) 
-    region_type = db.Column(db.String(10))
-    zindexValue = db.Column(db.Integer) # not sure what this is but we'll leave it in for now
-    neighborhood_url = db.Column(db.String(100)) 
+
+    #MAY NOT NEED THESE ATTRIBUTES
+    # z_last_updated = db.Column(db.DateTime)
+    # z_oneWeekChange_deprecated = db.Column(db.Boolean)
+    # z_valueChange = db.Column(db.Integer)
+    # z_valuationRange_low = db.Column(db.Integer)
+    # z_valuationRante_high = db.Column(db.Integer)
+    # z_percentile = db.Column(db.Integer)
+
+    #MAY USE THESE ATTRIBUTES LATER
+    # region_name  = db.Column(db.String(59))
+    # region_id = db.Column(db.String(5)) 
+    # region_type = db.Column(db.String(10))
+    # zindexValue = db.Column(db.Integer) # not sure what this is but we'll leave it in for now
+    # neighborhood_url = db.Column(db.String(100)) 
 
     def load_from_address(self, address, citystatezip):
         Zillow_key = os.environ["ZILLOW_ZWSID"]
@@ -175,7 +178,7 @@ class UserProperty(db.Model):
 
     user_property_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    zpid = db.Column(db.Integer, db.ForeignKey('property.zpid'))
+    zpid = db.Column(db.Integer, db.ForeignKey('properties.zpid'))
     time_saved = db.Column(db.DateTime)
 
 
@@ -232,19 +235,11 @@ def handleTok(tokenlist):
 
 
 
-
-
-
-
-
-
-
-
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ratings.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///propshop.db'
     db.app = app
     db.init_app(app)
 
@@ -256,4 +251,6 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
+
+
     #my_property = Property().load_from_address(address=, citystatezip=)
