@@ -112,11 +112,26 @@ def parse_address_search():
     """Parses the address for API call"""
     raw_address_text = request.args.get("address_search")
     raw_address_parsed = usaddress.tag(raw_address_text)
-    print raw_address_parsed,"*************************"
-    print type(raw_address_parsed), "**************************"
-    address_dict = dict(raw_address_parsed) #THE RETURNED OBJECT IS NOT AN ORDERED DICT BUT TUPLE. NEED TO FIX
+    address_ordered_dict = raw_address_parsed[0]
+    
+    address_keys = ['AddressNumber','StreetName','StreetNamePostType','OccupancyType','OccupancyIdentifier']
+    address_string_list=[]
+    for key in address_keys:
+        if address_ordered_dict.get(key) is not None:
+            address_string_list.append(address_ordered_dict[key])
+    address_string = ' '.join(address_string_list)
+    address_url_encode = address_string.replace(' ','+').strip()
 
-    return render_template("address-confirmation.html", raw_address_text=raw_address_text)
+    
+    citystatezip_string = address_ordered_dict.get('PlaceName','')
+    citystatezip_string += '%2C ' + address_ordered_dict.get('StateName','')
+    citystatezip_string += ' ' + address_ordered_dict.get('ZipCode','')
+    citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
+
+    new_property = Property().load_from_address(address=address_url_encode,citystatezip=citystatezip_url_encode)
+    print new_property, "+++++++++++++++++++++++++++++++++++++++++++++"
+
+    return render_template("address-confirmation.html", raw_address_text=str(new_property))
 
 # USE THIS TO CREATE THE MY PROFILE PAGE
 # @app.route("/users/<int:user_id>")

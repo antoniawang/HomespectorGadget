@@ -93,11 +93,11 @@ class Property(db.Model):
 #Fix after creating a parsed searched text
 ################################################
         # get Deep Search Results data and parse
-        url_zillow_house = "http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=%s&address=%s&citystatezip=%s>" % (Zillow_key) #NEED TO CREATE SEARCH TO PARSE
-        print url_zillow_house
+        url_zillow_house = "http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=%s&address=%s&citystatezip=%s>" % (Zillow_key, address, citystatezip) 
         response = urlopen(url_zillow_house)
-        print response.read()
+        print response.read(), "***************************"
         dom_zillow_house = minidom.parse(response)
+        print dom_zillow_house
 
         # retrieve example data by tag
         for node in dom_zillow_house.getElementsByTagName("result"):
@@ -162,6 +162,11 @@ class Property(db.Model):
 
 
     def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<ZPID = %s: Address=%s \n %s, %s %s>" % (self.zpid, self.street, self.city, self.state, self.zipcode)
+
+    def __str__(self):
         """Provide helpful representation when printed."""
 
         return "<ZPID = %s: Address=%s \n %s, %s %s>" % (self.zpid, self.street, self.city, self.state, self.zipcode)
