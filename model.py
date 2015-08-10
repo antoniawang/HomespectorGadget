@@ -9,12 +9,19 @@ import requests
 from urllib2 import Request, urlopen, URLError
 from xml.dom import minidom
 import urllib
+from datetime import datetime
 
 # This is the connection to the SQLite database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
 # object, where we do most of our interactions (like committing, etc.)
 
 db = SQLAlchemy()
+
+def getAttributes(clazz):
+    return {name: attr for name, attr in clazz.__dict__.items()
+        if not name.startswith("__") 
+        and not callable(attr)
+        and not type(attr) is staticmethod}
 
 ##############################################################################
 # Model definitions
@@ -67,7 +74,7 @@ class Property(db.Model):
     bathrooms = db.Column(db.Float)
     bedrooms = db.Column(db.Integer)
     totalRooms = db.Column(db.Integer)
-    lastSoldDate = db.Column(db.DateTime)
+    lastSoldDate = db.Column(db.String(10))
     lastSoldPrice = db.Column(db.Integer)
     z_amount = db.Column(db.Integer)
 
@@ -86,18 +93,19 @@ class Property(db.Model):
     # zindexValue = db.Column(db.Integer) # not sure what this is but we'll leave it in for now
     # neighborhood_url = db.Column(db.String(100)) 
 
-    def load_from_address(self, address, citystatezip):
+    @staticmethod 
+    def generate_from_address(address, citystatezip):
+        """ create new property object from url """
+    
         Zillow_key = os.environ["ZILLOW_ZWSID"]
-
-################################################
-#Fix after creating a parsed searched text
-################################################
+        ################################################
+        #Fix after creating a parsed searched text
+        ################################################
         # get Deep Search Results data and parse
-        url_zillow_house = "http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=%s&address=%s&citystatezip=%s>" % (Zillow_key, address, citystatezip) 
+        url_zillow_house = "http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=%s&address=%s&citystatezip=%s" % (Zillow_key, address, citystatezip) 
+        print url_zillow_house
         response = urlopen(url_zillow_house)
-        print response.read(), "***************************"
         dom_zillow_house = minidom.parse(response)
-        print dom_zillow_house
 
         # retrieve example data by tag
         for node in dom_zillow_house.getElementsByTagName("result"):
@@ -127,8 +135,6 @@ class Property(db.Model):
             lastSoldPrice = (handleTok(node.getElementsByTagName('lastSoldPrice'))).encode("utf8").strip()
             z_amount = (handleTok(node.getElementsByTagName('amount'))).encode("utf8").strip()
 
-
-
         print "zpid:", zpid
         print "homedetails:", homedetails
         print "street:", street
@@ -154,11 +160,36 @@ class Property(db.Model):
         print "lastSoldPrice:", lastSoldPrice
         print "zestimate amount:", z_amount
 
+        new_property = Property(zpid=zpid,
+                        homedetails=homedetails,
+                        street=street,
+                        city=city,
+                        state=state,
+                        zipcode=zipcode,
+                        latitude=latitude,
+                        longitude=longitude,
+                        FIPScounty=FIPScounty,
+                        useCode=useCode,
+                        taxAssessmentYear=taxAssessmentYear,
+                        taxAssessment=taxAssessment,
+                        yearBuilt=yearBuilt,
+                        lotSizeSqFt=lotSizeSqFt,
+                        finishedSqFt=finishedSqFt,
+                        bedrooms=bedrooms,
+                        bathrooms=bathrooms,
+                        totalRooms=totalRooms,
+                        lastSoldDate=lastSoldDate,
+                        lastSoldPrice=lastSoldPrice,
+                        z_amount=z_amount
+                        #time_saved=datetime.utcnow()
+                        )
+        return new_property
+
+
         #MAYBE TO DO: Get the Additional Updated Property Details
 
-
-    #data_per_house()
-
+    # def to_dict(self):
+    #     return getAttributes(Property)
 
 
     def __repr__(self):

@@ -7,7 +7,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Property, UserProperty
 
-#import subprocess
+from datetime import datetime
 
 import usaddress
 
@@ -128,10 +128,24 @@ def parse_address_search():
     citystatezip_string += ' ' + address_ordered_dict.get('ZipCode','')
     citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
 
-    new_property = Property().load_from_address(address=address_url_encode,citystatezip=citystatezip_url_encode)
-    print new_property, "+++++++++++++++++++++++++++++++++++++++++++++"
+    property_from_url = Property.generate_from_address(address=address_url_encode,
+                        citystatezip=citystatezip_url_encode)
 
-    return render_template("address-confirmation.html", raw_address_text=str(new_property))
+    #instantiate a session
+    if 'properties' not in session.keys():
+        session['properties'] = []
+
+    session['properties'].append(property_from_url)
+    #if logged in, commit change to database
+
+    if session['user_id']:
+
+        db.session.add(property_from_url)
+        db.session.commit()
+
+
+
+    return render_template("address-confirmation.html", raw_address_text="Yay")
 
 # USE THIS TO CREATE THE MY PROFILE PAGE
 # @app.route("/users/<int:user_id>")
