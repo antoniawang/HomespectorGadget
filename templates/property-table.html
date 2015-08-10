@@ -4,6 +4,32 @@
 <div class="well spaced" style="width:50%;">
   <h2>Compare Properties</h2>
 
-
 Page for comparing properties
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip Code</th>
+            <th>Bedrooms</th>
+            <th>Bathrooms</th>
+            <th>Zestimate</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for house in props %}
+        <tr>
+            <td>{{ house.street }}</td>
+            <td>{{ house.city }}</td>
+            <td>{{ house.state }}</td>
+            <td>{{ house.zip }}</td>
+            <td>{{ house.bedrooms }}</td>
+            <td>{{ house.bathrooms }}</td>
+            <td>{{ house.z_amount }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock %}

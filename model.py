@@ -185,6 +185,36 @@ class Property(db.Model):
                         )
         return new_property
 
+    # MAY NOT NEED THIS
+    # @classmethod
+    # def get_by_id(cls, zpid):
+    #     """Query for a specific melon in the database by the primary key"""
+
+    #     cursor = db_connect()
+    #     QUERY = """
+    #               SELECT zpid,
+    #                      address,
+    #                      city,
+    #                      state,
+    #                      zip,
+    #                      bedrooms,
+    #                      bathrooms,
+    #                      z_amount
+    #                FROM Properties
+    #                WHERE zpid = ?;
+    #            """
+
+    #     cursor.execute(QUERY, (zpid,))
+
+    #     row = cursor.fetchone()
+
+    #     if not row:
+    #         return None
+
+    #     house = Propert(*row)
+
+    #     return house
+
 
         #MAYBE TO DO: Get the Additional Updated Property Details
 
@@ -200,7 +230,7 @@ class Property(db.Model):
     def __str__(self):
         """Provide helpful representation when printed."""
 
-        return "<ZPID = %s: Address=%s \n %s, %s %s>" % (self.zpid, self.street, self.city, self.state, self.zipcode)
+        return "ZPID = %s \n Is this your address: %s \n %s, %s %s?" % (self.zpid, self.street, self.city, self.state, self.zipcode)
 
 # Need create a similar class for neighborhoods
 #class Neighborhood(db.Model):
