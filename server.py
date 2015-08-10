@@ -135,13 +135,16 @@ def parse_address_search():
     if 'properties' not in session.keys():
         session['properties'] = []
 
-    session['properties'].append(property_from_url)
+    session['properties'].append(property_from_url.zpid)
     #if logged in, commit change to database
 
     if session['user_id']:
+        this_property = Property.query.filter(Property.zpid == property_from_url.zpid).first()
+        print this_property, "**********************************************"
 
-        db.session.add(property_from_url)
-        db.session.commit()
+        if this_property is None:
+            db.session.add(property_from_url)
+            db.session.commit()
 
 
 
