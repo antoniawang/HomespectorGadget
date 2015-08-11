@@ -10,6 +10,7 @@ from urllib2 import Request, urlopen, URLError
 from xml.dom import minidom
 import urllib
 from datetime import datetime
+import sqlite3
 
 # This is the connection to the SQLite database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -47,7 +48,40 @@ class User(db.Model):
 
 
 class Property(db.Model):
-    """Property on PropShop website."""
+    """Property on PropShop website.
+    A wrapper object that corresponds to rows in the properties table.
+    """
+
+    def __init__(self,
+                 zpid=None,
+                 homedetails=None,
+                 street=None, city=None, state=None, zipcode=None,
+                 bedrooms=None, bathrooms=None, z_amount=None,
+                 latitude=None, longitude=None, FIPScounty=None,
+                 useCode=None, taxAssessmentYear=None, taxAssessment=None,
+                 yearBuilt=None, lotSizeSqFt=None, finishedSqFt=None,
+                 totalRooms=None, lastSoldDate=None, lastSoldPrice=None):
+        self.zpid = zpid
+        self.homedetails = homedetails
+        self.street = street
+        self.city = city
+        self.state = state
+        self.zipcode = zipcode
+        self.bedrooms = bedrooms
+        self.bathrooms = bathrooms
+        self.z_amount = z_amount
+        self.latitude = latitude
+        self.longitude = longitude
+        self.FIPScounty = FIPScounty
+        self.useCode = useCode
+        self.taxAssessmentYear = taxAssessmentYear
+        self.taxAssessment = taxAssessment
+        self.yearBuilt = yearBuilt
+        self.lotSizeSqFt = lotSizeSqFt
+        self.finishedSqFt = finishedSqFt
+        self.totalRooms = totalRooms
+        self.lastSoldDate = lastSoldDate
+        self.lastSoldPrice = lastSoldPrice
 
     __tablename__ = "properties"
 
@@ -186,34 +220,34 @@ class Property(db.Model):
         return new_property
 
     # MAY NOT NEED THIS
-    # @classmethod
-    # def get_by_id(cls, zpid):
-    #     """Query for a specific melon in the database by the primary key"""
+    @classmethod
+    def get_by_id(cls, zpid):
+        """Query for a specific property in the database by the primary key"""
 
-    #     cursor = db_connect()
-    #     QUERY = """
-    #               SELECT zpid,
-    #                      address,
-    #                      city,
-    #                      state,
-    #                      zip,
-    #                      bedrooms,
-    #                      bathrooms,
-    #                      z_amount
-    #                FROM Properties
-    #                WHERE zpid = ?;
-    #            """
+        cursor = get_db_cursor()
+        QUERY = """
+                  SELECT zpid,
+                         street,
+                         city,
+                         state,
+                         zipcode,
+                         bedrooms,
+                         bathrooms,
+                         z_amount
+                   FROM Properties
+                   WHERE zpid = ?;
+               """
 
-    #     cursor.execute(QUERY, (zpid,))
+        cursor.execute(QUERY, (zpid,))
 
-    #     row = cursor.fetchone()
+        row = cursor.fetchone()
 
-    #     if not row:
-    #         return None
+        if not row:
+            return None
 
-    #     house = Propert(*row)
+        house = Property(*row)
 
-    #     return house
+        return house
 
 
         #MAYBE TO DO: Get the Additional Updated Property Details
@@ -299,7 +333,11 @@ def handleTok(tokenlist):
 #           Tax assessment,Yearbuilt,lotSizeSqFt,finishedSqFt,Bedrooms
 #  *** FIPScounty *** = matches county codes in maps, census data, etc
 
-
+def get_db_cursor():
+    """Return a database cursor"""
+    conn = sqlite3.connect("propshop.db")
+    cursor = conn.cursor()
+    return cursor
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""

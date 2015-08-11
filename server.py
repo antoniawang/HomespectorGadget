@@ -104,7 +104,9 @@ def logout():
     """Log out."""
 
     del session["user_id"]
-    del session['properties']
+
+    if session['properties']:
+        del session['properties']
 
     flash("Logged Out.")
     return redirect("/")
@@ -141,15 +143,14 @@ def parse_address_search():
 
     if property_from_url.zpid not in session['properties']:
         session['properties'].append(property_from_url.zpid)
-        
-    #if logged in, commit change to database
-    if session['user_id']:
-        this_property = Property.query.filter(Property.zpid == property_from_url.zpid).first()
-        print this_property, "**********************************************"
+    
+    this_property = Property.query.filter(Property.zpid == property_from_url.zpid).first()
 
-        if this_property is None:
-            db.session.add(property_from_url)
-            db.session.commit()
+    if this_property is None:
+        db.session.add(property_from_url)
+        db.session.commit()
+    else:
+        this_property = property_from_url      
 
 
     return render_template("address-confirmation.html", raw_address_text=str(property_from_url))
@@ -169,39 +170,43 @@ def get_propeties_list():
 
     #Get the properties stored in session or create an empty session
     props_in_cart = session.get('properties',[])
+    print session, "*************************"
 
     # Our output cart will be a dictionary (so we can easily see if we
     # already have that melon type in there)
 
-    props = {}
+    properties = {}
 
     # Loop over the ZPIDs in the session cart and add each one to
     # the output cart
 
     for zpid in props_in_cart:
 
-        # Get the existing melon from our output cart, setting to an
+        # Get the existing property from our output cart, setting to an
         # empty dictionary if not there already
-        house = props.setdefault(zpid, {})
+        house = properties.setdefault(zpid, {})
+        house_data = Property.query.get(zpid) ####THIS QUERY IS NOT WORKING
+
+        print house, "***************************************"
+        print house_data, "***************************************"
 
         #TO DO: pass property from url this page
-        if house not in props_in_cart:
+        if house_data is not None and house is {}:
             # Check this property hasn't already been searched in the session and display data
-            house_data = property_from_url
-            print house_data
+            house['street'] = house_data.street
+            house['city'] = house_data.city
+            house['state'] = house_data.state
+            house['zipcode'] = house_data.zipcode
+            house['bedrooms'] = house_data.bedrooms
+            house['bathrooms'] = house_data.bathrooms
+            house['z_amount'] = house_data.z_amount
 
-            # house['address'] = house_data.address
-            # house['city'] = house_data.city
-            # house['state'] = house_data.state
-            # house['zipcode'] = house_data.zipcode
-            # house['bedrooms'] = house_data.bedrooms
-            # house['bathrooms'] = house_data.bathrooms
-            # house['z_amount'] = house_data.z_amount
 
     # Now, get a list of the all melons we've put into that dict
-    props = props_in_cart.values()
+    #print type(properties), "***************************************"
+    properties = properties.values()
 
-    return render_template("property-table.html", props=props)
+    return render_template("property-table.html", properties=properties)
 
 
 
