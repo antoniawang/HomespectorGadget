@@ -86,7 +86,7 @@ class Property(db.Model):
     __tablename__ = "properties"
 
     #Main property information
-    zpid = db.Column(db.String(7), primary_key=True)
+    zpid = db.Column(db.Integer, primary_key=True)
     homedetails = db.Column(db.String(200)) #URL to Zillow listing 
     market_status = db.Column(db.Boolean) #Scarped or user inputed data read from the listing URL
     listprice = db.Column(db.Integer) #Scarped or user inputed read from the listing URL

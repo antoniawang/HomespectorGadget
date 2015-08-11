@@ -116,7 +116,8 @@ def logout():
 @app.route('/search', methods=['GET'])
 def parse_address_search():
     """Parses the address for API call"""
-    raw_address_text = request.args.get("address_search")
+    if request.args:
+        raw_address_text = request.args.get("address_search")
     raw_address_parsed = usaddress.tag(raw_address_text)
     address_ordered_dict = raw_address_parsed[0]
     
@@ -170,7 +171,7 @@ def get_propeties_list():
 
     #Get the properties stored in session or create an empty session
     props_in_cart = set(session.get('properties',[]))
-    print session, "*************************"
+    print props_in_cart, "*************************"
 
     # Our output cart will be a dictionary (so we can easily see if we
     # already have the property in there)
@@ -181,14 +182,35 @@ def get_propeties_list():
     # the output cart
 
     for zpid in props_in_cart:
-        house_data = Property.query.get(zipid)
+        house_data = Property.query.get(zpid)
         if house_data is not None:
             properties.append(house_data)
         # else:
         #     pass # what can you do if it's not found?
 
+    print properties, "********************************"
     return render_template("property-table.html", properties=properties)
 
+
+@app.route('/search-form', methods=['GET'])
+def search_form():
+    """Show search form"""
+
+    return render_template("search-form.html")
+
+
+@app.route('/search-from-form', methods=['GET'])
+def search_from_form():
+    """Process search from the search form"""
+    street = request.args.get('street') 
+    unit = request.args.get('unit') 
+    city = request.args.get('city')
+    state = request.args.get('state')
+    zipcode = request.args.get('zipcode')
+
+    raw_address_text = street + " " + unit + " " + city + " " + state + " " + zipcode
+
+    return redirect("/search", raw_address_text=raw_address_text)
 
 
 if __name__ == "__main__":
