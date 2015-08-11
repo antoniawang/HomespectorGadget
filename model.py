@@ -86,7 +86,7 @@ class Property(db.Model):
     __tablename__ = "properties"
 
     #Main property information
-    zpid = db.Column(db.Integer, primary_key=True)
+    zpid = db.Column(db.String(7), primary_key=True)
     homedetails = db.Column(db.String(200)) #URL to Zillow listing 
     market_status = db.Column(db.Boolean) #Scarped or user inputed data read from the listing URL
     listprice = db.Column(db.Integer) #Scarped or user inputed read from the listing URL
@@ -137,7 +137,6 @@ class Property(db.Model):
         ################################################
         # get Deep Search Results data and parse
         url_zillow_house = "http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=%s&address=%s&citystatezip=%s" % (Zillow_key, address, citystatezip) 
-        print url_zillow_house
         response = urlopen(url_zillow_house)
         dom_zillow_house = minidom.parse(response)
 
