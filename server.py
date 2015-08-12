@@ -86,8 +86,8 @@ def login_process():
     user = User.query.filter_by(email=email).first()
 
     if not user:
-        flash("No such user")
-        return redirect("/login")
+        flash("No such user. Please register an account.")
+        return redirect("/register")
 
     if user.password != password:
         flash("Incorrect password")
@@ -165,17 +165,18 @@ def parse_address_search():
 #     return render_template("user.html", user=user)
 
 
-@app.route("/property-table")
+@app.route("/property-table", methods=['GET'])
 def get_propeties_list():
-    """Show list of properties stored in the session."""
+    """Show list of properties stored in the session.
+
+    If a user is logged in, let them save a property to favorites."""
 
     #Get the properties stored in session or create an empty session
     props_in_cart = set(session.get('properties',[]))
     print props_in_cart, "*************************"
 
     # Our output cart will be a dictionary (so we can easily see if we
-    # already have the property in there)
-
+    # already have the property in there
     properties = []
 
     # Loop over the ZPIDs in the session cart and add each one to
@@ -188,29 +189,43 @@ def get_propeties_list():
         # else:
         #     pass # what can you do if it's not found?
 
-    print properties, "********************************"
-    return render_template("property-table.html", properties=properties)
+    user_id = session.get('user_id')
+
+    if user_id:
+        liked = UserProperty.query.filter_by(user_id=user_id, zpid=zpid).first()
+    
+    else:
+        liked = None    
+ 
 
 
-@app.route('/search-form', methods=['GET'])
-def search_form():
-    """Show search form"""
-
-    return render_template("search-form.html")
+    return render_template("property-table.html", properties=properties, liked=liked)
 
 
-@app.route('/search-from-form', methods=['GET'])
-def search_from_form():
-    """Process search from the search form"""
-    street = request.args.get('street') 
-    unit = request.args.get('unit') 
-    city = request.args.get('city')
-    state = request.args.get('state')
-    zipcode = request.args.get('zipcode')
+@app.route("/property-table", methods=['POST']) #TO DO: FIX
+def add_to_favorites():
+    """Add a property to user's favorites list"""
 
-    raw_address_text = street + " " + unit + " " + city + " " + state + " " + zipcode
+    # Get form variable
+    like = request.form['Like']
 
-    return redirect("/search", raw_address_text=raw_address_text)
+    user_id = session.get('user_id')
+
+    if not user_id:
+        raise Exception("No user logged in.")
+
+    liked = UserProperty.query.filter_by(user_id=user_id, zpid=zpid).first()
+
+    if liked:
+        flash("You already saved this property.")
+
+    else:
+        flash("Property added to favorites.")
+        db.session.add(like)
+
+    db.session.commit()
+
+    return render_template('property-table.html', properties=properties, liked=liked)
 
 
 if __name__ == "__main__":

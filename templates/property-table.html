@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 <!-- Need to change this to a property table -->
+
+<script>
+  $("#heart-button").change( function() { 
+      if (this.checked) {
+      alert("Checked!")
+  } else {
+    alert("Not Checked!")
+  }
+    }); 
+</script>
+
 <div class="well spaced" style="width:50%;">
   <h2>Compare Properties</h2>
 
@@ -15,6 +26,7 @@ Page for comparing properties
             <th>Bedrooms</th>
             <th>Bathrooms</th>
             <th>Zestimate</th>
+            <th>Add to Faves</th>
         </tr>
         </thead>
         <tbody>
@@ -27,6 +39,16 @@ Page for comparing properties
             <td>{{ house.bedrooms }}</td>
             <td>{{ house.bathrooms }}</td>
             <td>{{ house.z_amount }}</td>
+            <td>
+            {% if "user_id" in session %}
+                {% if liked %}
+                    You already saved this home to favorites
+                {% endif %}
+                Add to Favorite<br>
+                <input type="checkbox" name="like" id="heart-button">
+            
+            {% endif %} 
+            </td>
         </tr>
         {% endfor %}
         </tbody>
