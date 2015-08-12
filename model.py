@@ -296,8 +296,6 @@ class UserProperty(db.Model):
             self.user_property_id, self.user_id, self.zpid)
 
 
-
-
 ##############################################################################
 # Helper functions for parsing (from Denise's SunBear Github)
 

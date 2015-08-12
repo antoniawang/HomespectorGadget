@@ -136,7 +136,7 @@ def parse_address_search():
     citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
 
     property_from_url = Property.generate_from_address(address=address_url_encode,
-                        citystatezip=citystatezip_url_encode)
+                        citystatezip=citystatezip_url_encode)  
 
     #instantiate a session
     if 'properties' not in session.keys():
@@ -151,10 +151,10 @@ def parse_address_search():
         db.session.add(property_from_url)
         db.session.commit()
     else:
-        this_property = property_from_url      
-
-
-    return render_template("address-confirmation.html", raw_address_text=str(property_from_url))
+        this_property = property_from_url 
+                       
+    print session['properties'], "********HITHERE*********************"
+    return render_template("address-confirmation.html", this_property=this_property, raw_address_text=str(property_from_url))
 
 # USE THIS TO CREATE THE MY PROFILE PAGE
 # @app.route("/users/<int:user_id>")
@@ -164,16 +164,39 @@ def parse_address_search():
 #     user = User.query.get(user_id)
 #     return render_template("user.html", user=user)
 
+@app.route("/delete-property", methods=['POST'])
+def delete_property():
+    """Delete the property from session and SQL
+    if wrong address was returned."""
+
+    zpid = request.form['Delete-Property']
+    props_in_list = session['properties']
+    props_in_list.pop()
+
+    wrong_house = Property.query.filter_by(zpid=zpid).first()
+    db.session.delete(wrong_house)
+
+    db.session.commit()
+
+    print props_in_list, "********HELLOWORLD**********"
+    flash("Please search again")
+
+    return redirect ("/")
+
+
 
 @app.route("/property-table", methods=['GET'])
 def get_propeties_list():
-    """Show list of properties stored in the session.
+    """Have user confirm the search results.
+    Upon confirmation, add property to session.
+    Show list of properties stored in the session.
 
     If a user is logged in, let them save a property to favorites."""
 
+    
     #Get the properties stored in session or create an empty session
-    props_in_cart = set(session.get('properties',[]))
-    print props_in_cart, "*************************"
+    #Turn the list of properties into a set to get rid of repeats
+    props_in_set = set(session.get('properties',[]))
 
     # Our output cart will be a dictionary (so we can easily see if we
     # already have the property in there
@@ -182,7 +205,7 @@ def get_propeties_list():
     # Loop over the ZPIDs in the session cart and add each one to
     # the output cart
 
-    for zpid in props_in_cart:
+    for zpid in props_in_set:
         house_data = Property.query.get(zpid)
         if house_data is not None:
             properties.append(house_data)
@@ -195,9 +218,7 @@ def get_propeties_list():
         liked = UserProperty.query.filter_by(user_id=user_id, zpid=zpid).first()
     
     else:
-        liked = None    
- 
-
+        liked = None
 
     return render_template("property-table.html", properties=properties, liked=liked)
 
@@ -226,6 +247,8 @@ def add_to_favorites():
     db.session.commit()
 
     return render_template('property-table.html', properties=properties, liked=liked)
+
+
 
 
 if __name__ == "__main__":
