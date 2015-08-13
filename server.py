@@ -154,7 +154,7 @@ def parse_address_search():
         this_property = property_from_url 
                        
     print session['properties'], "********HITHERE*********************"
-    return render_template("address-confirmation.html", this_property=this_property, raw_address_text=str(property_from_url))
+    return render_template("address-confirmation.html", property_from_url=property_from_url, raw_address_text=str(property_from_url))
 
 # USE THIS TO CREATE THE MY PROFILE PAGE
 # @app.route("/users/<int:user_id>")
@@ -223,30 +223,37 @@ def get_propeties_list():
     return render_template("property-table.html", properties=properties, liked=liked)
 
 
-@app.route("/property-table", methods=['POST']) #TO DO: FIX
+@app.route("/add_favorites", methods=['POST']) #TO DO: FIX
 def add_to_favorites():
-    """Add a property to user's favorites list"""
-
-    # Get form variable
-    like = request.form['Like']
+    """Add a property to user's favorites list
+    Done with Ajax to add an record in the UserProperty property-table
+    linking the user_id to the zpid"""
 
     user_id = session.get('user_id')
 
-    if not user_id:
+    if user_id:
+        zpid = request.form.get('property') 
+
+        liked = UserProperty.query.filter_by(user_id=user_id, zpid=zpid).first()
+    else:
         raise Exception("No user logged in.")
 
-    liked = UserProperty.query.filter_by(user_id=user_id, zpid=zpid).first()
-
     if liked:
-        flash("You already saved this property.")
+        print "deleting", liked
+        db.session.delete(liked)
 
     else:
-        flash("Property added to favorites.")
-        db.session.add(like)
+        print "liked a property"
+        print "user id and zpid", this_user_id, zpid
+        
+        new_like = UserProperty(user_id=user_id,
+                                 zpid=zpid,
+                                 time_saved=datetime.utcnow())
+        db.session.add(new_like)
 
     db.session.commit()
 
-    return render_template('property-table.html', properties=properties, liked=liked)
+    return "Victory"
 
 
 

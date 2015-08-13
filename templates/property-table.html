@@ -44,9 +44,10 @@ Page for comparing properties
                 {% if liked %}
                     You already saved this home to favorites
                 {% endif %}
-                Add to Favorite<br>
-                <input type="checkbox" name="like" id="heart-button">
-            
+                <button type="button" class="favorite-star btn btn-default btn-sm"  id="{{ house.zpid }}">
+                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> 
+                    </button>
+
             {% endif %} 
             </td>
         </tr>
