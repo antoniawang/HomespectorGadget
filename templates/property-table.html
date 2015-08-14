@@ -2,16 +2,6 @@
 {% block content %}
 <!-- Need to change this to a property table -->
 
-<script>
-  $("#heart-button").change( function() { 
-      if (this.checked) {
-      alert("Checked!")
-  } else {
-    alert("Not Checked!")
-  }
-    }); 
-</script>
-
 <div class="well spaced" style="width:50%;">
   <h2>Compare Properties</h2>
 
@@ -26,7 +16,7 @@ Page for comparing properties
             <th>Bedrooms</th>
             <th>Bathrooms</th>
             <th>Zestimate</th>
-            <th>Add to Faves</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -41,14 +31,15 @@ Page for comparing properties
             <td>{{ house.z_amount }}</td>
             <td>
             {% if "user_id" in session %}
-                {% if liked %}
-                    You already saved this home to favorites
+                <span class="glyphicon glyphicon-heart
+                {% if house.zpid in liked %}
+                red
                 {% endif %}
-                <button type="button" class="favorite-star btn btn-default btn-sm"  id="{{ house.zpid }}">
-                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> 
-                    </button>
+                " id="{{ house.zpid }}" aria-hidden="true"></span> 
 
             {% endif %} 
+                <span class="glyphicon glyphicon-pushpin yellow" id="{{ house.zpid }}" aria-hidden="true"></span>
+
             </td>
         </tr>
         {% endfor %}

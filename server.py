@@ -215,15 +215,13 @@ def get_propeties_list():
     user_id = session.get('user_id')
 
     if user_id:
-        liked = UserProperty.query.filter_by(user_id=user_id, zpid=zpid).first()
-    
-    else:
-        liked = None
+        results = db.session.query(UserProperty.zpid).filter_by(user_id=user_id).all()
+        liked = [zpid for (zpid, ) in results]
 
     return render_template("property-table.html", properties=properties, liked=liked)
 
 
-@app.route("/add_favorites", methods=['POST']) #TO DO: FIX
+@app.route("/add-favorites", methods=['POST'])
 def add_to_favorites():
     """Add a property to user's favorites list
     Done with Ajax to add an record in the UserProperty property-table
@@ -244,7 +242,7 @@ def add_to_favorites():
 
     else:
         print "liked a property"
-        print "user id and zpid", this_user_id, zpid
+        print "user id and zpid", user_id, zpid
         
         new_like = UserProperty(user_id=user_id,
                                  zpid=zpid,
@@ -256,6 +254,21 @@ def add_to_favorites():
     return "Victory"
 
 
+@app.route("/delete-from-session", methods=['POST'])
+def delete_from_session():
+    """Delete a property from the session
+    Done with Ajax to take out the property from the table"""
+
+    props_in_list = session.get('properties',[])
+
+    zpid = request.form.get('property') 
+
+    if zpid in props_in_list:
+        zpid_index = props_in_list.index(zpid)
+        props_in_list.pop(zpid_index)
+
+
+    return "Victory"
 
 
 if __name__ == "__main__":
