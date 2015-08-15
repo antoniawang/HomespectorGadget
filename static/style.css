@@ -1,5 +1,5 @@
-.red {
-	color: red;
+.blue {
+	color: blue;
 }
 
 .white {
@@ -8,4 +8,21 @@
 
 .yellow {
 	color: yellow;
+}
+
+div#left-col {
+	z-index: 100;
+	background-color: white;
+	color: blue;
+	position: fixed;
+    left: 0;
+    width: 20%;
+    height: 100%;
+}
+
+.top-right-nav {
+/*	position: fixed;
+	right: 0;
+	width: 80%;*/
+	margin-left: 20%;
 }

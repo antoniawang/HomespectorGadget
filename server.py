@@ -13,6 +13,8 @@ from datetime import datetime
 
 import usaddress
 
+import os
+
 from collections import OrderedDict
 
 app = Flask(__name__)
@@ -24,6 +26,7 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
+mapbox_api_key = os.environ["MAPBOX_KEY"]
 
 @app.route('/')
 def index():
@@ -112,7 +115,50 @@ def logout():
     return redirect("/")
 
 
-######################################################
+# ######################################################
+# @app.route('/search', methods=['GET'])
+# def parse_address_search():
+#     """Parses the address for API call"""
+#     if request.args:
+#         raw_address_text = request.args.get("address_search")
+#     raw_address_parsed = usaddress.tag(raw_address_text)
+#     address_ordered_dict = raw_address_parsed[0]
+    
+#     address_keys = ['AddressNumber','StreetName','StreetNamePostType','OccupancyType','OccupancyIdentifier']
+#     address_string_list=[]
+#     for key in address_keys:
+#         if address_ordered_dict.get(key) is not None:
+#             address_string_list.append(address_ordered_dict[key])
+#     address_string = ' '.join(address_string_list)
+#     address_url_encode = address_string.replace(' ','+').strip()
+
+    
+#     citystatezip_string = address_ordered_dict.get('PlaceName','')
+#     citystatezip_string += '%2C ' + address_ordered_dict.get('StateName','')
+#     citystatezip_string += ' ' + address_ordered_dict.get('ZipCode','')
+#     citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
+
+#     property_from_url = Property.generate_from_address(address=address_url_encode,
+#                         citystatezip=citystatezip_url_encode)  
+
+#     #instantiate a session
+#     if 'properties' not in session.keys():
+#         session['properties'] = []
+
+#     if property_from_url.zpid not in session['properties']:
+#         session['properties'].append(property_from_url.zpid)
+    
+#     this_property = Property.query.filter(Property.zpid == property_from_url.zpid).first()
+
+#     if this_property is None:
+#         db.session.add(property_from_url)
+#         db.session.commit()
+#     else:
+#         this_property = property_from_url 
+                       
+#     print session['properties'], "********HITHERE*********************"
+#     return render_template("address-confirmation.html", property_from_url=property_from_url, raw_address_text=str(property_from_url))
+
 @app.route('/search', methods=['GET'])
 def parse_address_search():
     """Parses the address for API call"""
@@ -218,7 +264,7 @@ def get_propeties_list():
         results = db.session.query(UserProperty.zpid).filter_by(user_id=user_id).all()
         liked = [zpid for (zpid, ) in results]
 
-    return render_template("property-table.html", properties=properties, liked=liked)
+    return render_template("left-column.html", properties=properties, liked=liked)
 
 
 @app.route("/add-favorites", methods=['POST'])
@@ -269,6 +315,18 @@ def delete_from_session():
 
 
     return "Victory"
+
+##############################################
+@app.route("/map", methods=['GET'])
+def show_map():
+    """Show the properties stored in session on a map
+    then allow to zoom in on properties to show pindrops
+    or heat maps"""
+
+    print mapbox_api_key, "***********************************"
+
+    return render_template("map.html", mapbox_api_key=mapbox_api_key)
+
 
 
 if __name__ == "__main__":

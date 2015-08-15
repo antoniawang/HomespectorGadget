@@ -31,14 +31,14 @@ Page for comparing properties
             <td>{{ house.z_amount }}</td>
             <td>
             {% if "user_id" in session %}
-                <span class="glyphicon glyphicon-heart
+                <span class="glyphicon glyphicon-star
                 {% if house.zpid in liked %}
-                red
+                yellow
                 {% endif %}
                 " id="{{ house.zpid }}" aria-hidden="true"></span> 
 
             {% endif %} 
-                <span class="glyphicon glyphicon-pushpin yellow" id="{{ house.zpid }}" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-pushpin blue" id="{{ house.zpid }}" aria-hidden="true"></span>
 
             </td>
         </tr>
