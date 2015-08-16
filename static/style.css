@@ -26,3 +26,24 @@ div#left-col {
 	width: 80%;*/
 	margin-left: 20%;
 }
+
+.modal {
+	display: none;
+	border: 1px solid black;
+	border-radius: 3px;
+	width: 50%;
+	height: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: auto;
+	margin-top: auto;
+	background-color: #3C3C3C;
+}
+
+.modal-confirm {
+	height: 35%;
+}
+
+.modal-login {
+	height: 50%;
+}

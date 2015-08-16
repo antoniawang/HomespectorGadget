@@ -227,7 +227,7 @@ def delete_property():
     print props_in_list, "********HELLOWORLD**********"
     flash("Please search again")
 
-    return redirect ("/")
+    return "Deleted ", wrong_house
 
 
 

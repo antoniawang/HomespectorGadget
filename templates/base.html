@@ -91,16 +91,16 @@
                 <li><a href="/property-table">Compare Properties</a></li>
             </ul>
 
-        <form action="search">
+        <form>
             <div class="form-group">
               <label>
               Enter an address 
-              <input type="text" name="address_search" class="form-control">
+              <input id="address-search" type="text" name="address_search" class="form-control">
               </label>
              </div>
 
             <div class="form-group">
-              <input type="submit" value="Search" class="btn btn-danger">
+              <input id="search-btn" value="Search" class="btn btn-danger"> 
             </div>
         </form>         
 
@@ -120,9 +120,13 @@
     <!-- /.container-fluid -->
 </nav>
 <div id="extending">
-    {% for flash in get_flashed_messages() %}
-      <div class="alert alert-danger" style="width:90%; margin:0 auto;">{{ flash }}</div>
-    {% endfor %}
+{% for flash in get_flashed_messages() %}
+  <div class="alert alert-danger" style="width:90%; margin:0 auto;">{{ flash }}</div>
+{% endfor %}
+
+    <div id="address-confirm" class="modal modal-confirm" style="width:50%;">
+    </div>
+
 {% block content %}
 {% endblock %}
 </div>

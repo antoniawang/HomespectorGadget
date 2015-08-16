@@ -1,48 +1,59 @@
-// When any user clicks on a property's star
-// Add the record to connect user and property in the UserProperty table
-$(document).ready(function() {
-	$("span.glyphicon-star").click(function() {	//highlight the star
-        console.log(this);
-	  $(this).toggleClass("yellow");
+//When user searches an address
+//Pass the text contents to the search app route
+//Make the modal appear
 
+$(document).ready(function() {
+    $("#search-btn").click(function(){
+        console.log("Search!")
 
 // Send the new property to the database
-    $.ajax("/add-favorites", {
-    	method: "POST",
-        datatype:"json",
-    	data: {'property': $(this).attr("id")} 	// Nothing uses 'count'. Yet.
-    	}).done(function() {
-				console.log("Victory! Fave changed successfully");  		// confirm in the console
+        $.get("/search", {'address_search': $("#address-search").val()}).done(function(results) {
+        // {
+        // method: "GET",
+        // datatype:"json",
+        // data: {'address_search': $("#address-search").val()} 
+        // }).get(function(results) {
+            console.log("Got" + results)
+            var contents = results;
+            $("#address-confirm").html(contents);
+            console.log("Make div appear!") ;    // confirm in the console
+            $("#address-confirm").css("display","block");
+           
         });
     });
 });
 
 
-// When any user clicks on a property's "X"
-// Delete this property from the session
+//Make the address confimation window disapear
 $(document).ready(function() {
-    $("span.glyphicon-pushpin").click(function() {    //highlight the star
-        console.log(this);
+    $("#confirm-no").click(function() {
+        console.log("Make div disappear!")
+        $("#address-confirm").css("display","none");
 
-      var that = this;
-    // Send the new property to the database
-    $.ajax("/delete-from-session", {
-        method: "POST",
-        datatype:"json",
-        data: {'property': $(this).attr("id")}  // the remove class color doesn't work right now
-        }).done(function() {
-                $(this).removeClass("blue");
-                $(this).addClass("white");
-                alert(this)
-                console.log(that.closest('tr'));
-                setTimeout(function(){
-                    that.closest('tr').remove();
-                }, 2000);
-                });
-                console.log("Victory! Deleted from session.");        // confirm in the console
+        // Send the new property to the database
+        $.post("/delete-property", {'Delete-Property': $(this).attr("id")});
+        console.log("Deleted from session")
     });
-}); 
+});
+
+
+
+//Make the address confimation window disapear
+$(document).ready(function() {
+    $("#confirm-yes").click(function() {
+        console.log("Make div disappear!")
+        $("#address-confirm").css("display","none");
+
+    });
+});
 
 
 //When property table loads, call ajax to update the lefthand column div
-//Use the property-table app route to populate with properties from session
+//Use the property-table app route to populate with properties from sessio
+$(document).ready(function() {
+    console.log("Load Left!")
+    $.ajax("/property-table").done(function(result){
+            $("#left-col").html(result);
+    });
+});
+
