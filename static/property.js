@@ -49,11 +49,16 @@ $(document).ready(function() {
 
 
 //When property table loads, call ajax to update the lefthand column div
-//Use the property-table app route to populate with properties from sessio
+//Use the property-list app route to populate with properties from sessio
 $(document).ready(function() {
     console.log("Load Left!")
-    $.ajax("/property-table").done(function(result){
-            $("#left-col").html(result);
+    $.ajax("/property-list").done(function(result) {
+            $("#left-col").html(result); 
     });
+    // $.ajax("/comparison-table").done(function(result) {
+    //         $("#container-table").html(result);
+    // });
 });
+
+
 

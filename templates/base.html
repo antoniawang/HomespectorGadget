@@ -87,9 +87,9 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse"
              id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="/property-table">Compare Properties</a></li>
-            </ul>
+<!--             <ul class="nav navbar-nav">
+                <li><a href="/property-list">Compare Properties</a></li>
+            </ul> -->
 
         <form>
             <div class="form-group">
@@ -119,6 +119,8 @@
     </div>
     <!-- /.container-fluid -->
 </nav>
+<div class="comp-table" id="container-table">
+</div>
 <div id="extending">
 {% for flash in get_flashed_messages() %}
   <div class="alert alert-danger" style="width:90%; margin:0 auto;">{{ flash }}</div>
@@ -130,7 +132,6 @@
 {% block content %}
 {% endblock %}
 </div>
-
 
 </body>
 </html>

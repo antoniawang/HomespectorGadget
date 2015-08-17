@@ -111,6 +111,9 @@ def logout():
     if session['properties']:
         del session['properties']
 
+    if session['comp_table']:
+        del session['comp_table']
+
     flash("Logged Out.")
     return redirect("/")
 
@@ -198,8 +201,7 @@ def parse_address_search():
         db.session.commit()
     else:
         this_property = property_from_url 
-                       
-    print session['properties'], "********HITHERE*********************"
+
     return render_template("address-confirmation.html", property_from_url=property_from_url, raw_address_text=str(property_from_url))
 
 # USE THIS TO CREATE THE MY PROFILE PAGE
@@ -231,7 +233,7 @@ def delete_property():
 
 
 
-@app.route("/property-table", methods=['GET'])
+@app.route("/property-list", methods=['GET'])
 def get_propeties_list():
     """Have user confirm the search results.
     Upon confirmation, add property to session.
@@ -270,7 +272,7 @@ def get_propeties_list():
 @app.route("/add-favorites", methods=['POST'])
 def add_to_favorites():
     """Add a property to user's favorites list
-    Done with Ajax to add an record in the UserProperty property-table
+    Done with Ajax to add an record in the UserProperty table
     linking the user_id to the zpid"""
 
     user_id = session.get('user_id')
@@ -315,6 +317,41 @@ def delete_from_session():
 
 
     return "Victory"
+
+@app.route("/comparison-table", methods=['GET'])
+def generate_comparison_table():
+    """Populate and change comparison table."""
+
+    return render_template("comparison-table.html")  
+
+@app.route("/update-comparison-table", methods=['GET','POST'])
+def update_comp_table():
+    """Adds or remove a property in comparison table"""
+    zpid = request.form.get('zpid')
+    is_in_table = request.form.get('is_in_table')
+    print is_in_table, "$$$$$$$$$"
+
+    props_in_table = set(session.get('comp_table',[]))
+
+    result = 1
+
+    if is_in_table == "true":
+        if zpid in props_in_table:
+            props_in_table.remove(zpid)
+    else:
+        if zpid not in props_in_table:
+            print len(props_in_table), "$$$$$$$$$$$$$$$$$$$$$$"
+            if len(props_in_table) < 4:
+                props_in_table.add(zpid)
+            else:
+                flash("Too many!")
+                result = 0
+
+
+    session['comp_table'] = list(props_in_table)
+    print props_in_table, "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+    return str(result)
+
 
 ##############################################
 @app.route("/map", methods=['GET'])

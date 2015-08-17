@@ -10,6 +10,10 @@
 	color: yellow;
 }
 
+.green {
+	color: green;
+}
+
 div#left-col {
 	z-index: 100;
 	background-color: white;
@@ -18,6 +22,7 @@ div#left-col {
     left: 0;
     width: 20%;
     height: 100%;
+    top-margin: 10%;
 }
 
 .top-right-nav {
@@ -47,3 +52,25 @@ div#left-col {
 .modal-login {
 	height: 50%;
 }
+
+.comp-table{
+	display: table;
+	border-collapse: collapse;
+	margin-left: 20%;
+	margin-top: 0;
+	width: 80%;
+}
+
+.comp-table .comp-row {
+	display: table-row;
+}
+
+.comp-table .comp-col {
+	display: table-cell;
+	text-align: left;
+	vertical-align: top;
+	border: 2px solid black;
+	width: 20%;
+	min-width: 20%;
+}
+
