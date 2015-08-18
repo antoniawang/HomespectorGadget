@@ -28,7 +28,7 @@ app.jinja_env.undefined = StrictUndefined
 
 mapbox_api_key = os.environ["MAPBOX_KEY"]
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index():
     """Homepage."""
 
@@ -99,7 +99,10 @@ def login_process():
     session["user_id"] = user.user_id
 
     flash("Hello, %s!" % user.fname)
-    return redirect("/") #Change redirect path later
+
+    print session["user_id"], "********************************"
+
+    return render_template("session-login.html", session=session)
 
 
 @app.route('/logout')
@@ -266,6 +269,7 @@ def get_propeties_list():
         #     pass # what can you do if it's not found?
 
     user_id = session.get('user_id')
+    liked = None
 
     if user_id:
         results = db.session.query(UserProperty.zpid).filter_by(user_id=user_id).all()
