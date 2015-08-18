@@ -166,7 +166,7 @@ def logout():
 def parse_address_search():
     """Parses the address for API call"""
     if request.args:
-        raw_address_text = request.args.get("address_search")
+        raw_address_text = request.args.get("address-search")
     raw_address_parsed = usaddress.tag(raw_address_text)
     address_ordered_dict = raw_address_parsed[0]
     
@@ -211,6 +211,11 @@ def parse_address_search():
 
 #     user = User.query.get(user_id)
 #     return render_template("user.html", user=user)
+
+@app.route("/table")
+def show_table_page():
+    """Load table.html """
+    return render_template("table.html")
 
 @app.route("/delete-property", methods=['POST'])
 def delete_property():

@@ -95,7 +95,7 @@
             <div class="form-group">
               <label>
               Enter an address 
-              <input id="address-search" type="text" name="address_search" class="form-control">
+              <input id="address-search" type="text" name="address-search" class="form-control">
               </label>
              </div>
 
@@ -110,7 +110,7 @@
                   <li><a href="/logout">Logout</a></li>
               {% else %}
                   <li><a href="/register">Register</a></li>
-                  <li><a href="/login">Login</a></li>
+                  <li id="login">Login</li>
               {% endif %}
 
             </ul>
@@ -125,9 +125,12 @@
 {% for flash in get_flashed_messages() %}
   <div class="alert alert-danger" style="width:90%; margin:0 auto;">{{ flash }}</div>
 {% endfor %}
+    <div id="login-form" class="modal modal-login" style="width:50%;">
+    </div>
 
     <div id="address-confirm" class="modal modal-confirm" style="width:50%;">
     </div>
+
 
 {% block content %}
 {% endblock %}
