@@ -1,6 +1,8 @@
+{% extends 'base.html' %}
+
 {% block content %}
 <!-- Need to change this to a property table -->
-
+<div class="comp-table" id="container-table">
 <div class="comp-row" id="r1">
     <div class="comp-col" id="specs-col">
 
@@ -14,27 +16,38 @@
             <p>Zip Code</p>
             <p>Bedrooms</p>
             <p>Bathrooms</p>
+            <p>Lot Size (Sq.Ft.)</p>
+            <p>Finished Area (Sq.Ft.)</p>
             <p>Zestimate</p>
-            <p>Last sold on</p>
-            <p>Last sold price</p>
+            <p>Year Built</p>
+            <p>Last Sold Date</p>
+            <p>Last Sold Price</p>
+            <p>Use Code</p>
+            <p>Latitude</p>
+            <p>Longitude</p>
             <p>WalkScore</p>
             <p>Transit Score</p>
+
     </div>
     <div class="comp-col" id="prop1-col">
-
             
             <p>Click Here!</p>
             <p>Market Status</p>
             <p>List price</p>
-            <p>Street</p>
-            <p>City</p>
-            <p>State</p>
-            <p>Zip Code</p>
-            <p>Bedrooms</p>
-            <p>Bathrooms</p>
-            <p>Zestimate</p>
-            <p>Last sold on</p>
-            <p>Last sold price</p>
+            <p>{{ house.street }}</p>
+            <p>house.city</p>
+            <p>house.state</p>
+            <p>house.zipcode</p>
+            <p>house.bedrooms</p>
+            <p>house.bathrooms</p>
+            <p>house.lotSizeSqFt</p>
+            <p>house.finishedSqFt</p>
+            <p>house.z_amount</p>
+            <p>house.yearBuilt</p>
+            <p>house.lastSoldDate</p>
+            <p>house.lastSoldPrice</p>
+            <p>house.latitude</p>
+            <p>house.longitude</p>
             <p>WalkScore</p>
             <p>Transit Score</p>
     </div>
@@ -93,5 +106,6 @@
             <p>Transit Score</p>
     </div>
 </div>    
+</div>
 
 {% endblock %}

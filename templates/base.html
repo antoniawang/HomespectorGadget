@@ -16,7 +16,7 @@
     rel="stylesheet">
 
     <link href='http://fonts.googleapis.com/css?family=Frijole' rel='stylesheet' type='text/css'>
-    
+    <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS" />
     <style>
         h1, h2, h3, .navbar-brand { font-family: "Frijole"; }
 
@@ -119,8 +119,6 @@
     </div>
     <!-- /.container-fluid -->
 </nav>
-<div class="comp-table" id="container-table">
-</div>
 <div id="extending">
 {% for flash in get_flashed_messages() %}
   <div class="alert alert-danger" style="width:90%; margin:0 auto;">{{ flash }}</div>
@@ -133,6 +131,7 @@
 
 
 {% block content %}
+
 {% endblock %}
 </div>
 
