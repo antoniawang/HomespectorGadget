@@ -1,8 +1,5 @@
-{% extends 'base.html' %}
-
 {% block content %}
 <!-- Need to change this to a property table -->
-<div class="comp-table" id="container-table">
     <div class="comp-row" id="r1">
         <div class="comp-col" id="specs-col">
 
@@ -29,7 +26,8 @@
             <p>Transit Score</p>
 
         </div>
-        <div class="comp-col" id="prop1-col">
+        {% for house in props_in_table %}
+        <div class="comp-col" id="prop{{loop.index}}-col">
                 
             <p>Click Here!</p>
             <p>Market Status</p>
@@ -52,8 +50,8 @@
             <p>WalkScore</p>
             <p>Transit Score</p>
         </div>             
+        {% endfor %}
 
     </div>    
-</div>
 
 {% endblock %}

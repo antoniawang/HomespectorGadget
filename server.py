@@ -327,11 +327,22 @@ def delete_from_session():
 
     return "Victory"
 
-@app.route("/comparison-table", methods=['GET'])
+@app.route("/comparison-table", methods=['GET', 'POST'])
 def generate_comparison_table():
     """Populate and change comparison table."""
+    houses = request.form.get('houses')
+    print "**********"
+    print "Houses is"
+    print houses
+    print "**********"
+    if houses == None:
+        return render_template("comparison-table.html", props_in_table=[])
+    if "result" in houses.keys():
+        del houses["result"]
+    possible_keys = [str(x) for x in [1,2,3,4]]
+    props_in_table = [houses[x] for x in possible_keys if x in houses.keys()]
 
-    return render_template("comparison-table.html")  
+    return render_template("comparison-table.html", props_in_table=props_in_table)  
 
 @app.route("/update-comparison-table", methods=['GET','POST'])
 def update_comp_table():
