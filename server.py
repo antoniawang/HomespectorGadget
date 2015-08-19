@@ -330,45 +330,9 @@ def delete_from_session():
 @app.route("/comparison-table", methods=['GET', 'POST'])
 def generate_comparison_table():
     """Populate and change comparison table."""
-    houses = request.form.get('houses')
-    print "**********"
-    print "Houses is"
-    print houses
-    print "**********"
-    if houses == None:
-        return render_template("comparison-table.html", props_in_table=[])
-    if "result" in houses.keys():
-        del houses["result"]
-    possible_keys = [str(x) for x in [1,2,3,4]]
-    props_in_table = [houses[x] for x in possible_keys if x in houses.keys()]
-
-    return render_template("comparison-table.html", props_in_table=props_in_table)  
-
-@app.route("/update-comparison-table", methods=['GET','POST'])
-def update_comp_table():
-    """Adds or remove a property in comparison table"""
-    zpid = request.form.get('zpid')
-    is_in_table = request.form.get('is_in_table')
-    print is_in_table, "$$$$$$$$$"
-
     zpids_in_table = set(session.get('comp_table',[]))
-    result = 1
-
-    if is_in_table == "true":
-        if zpid in zpids_in_table:
-            zpids_in_table.remove(zpid)
-    else:
-        if zpid not in zpids_in_table:
-            if len(zpids_in_table) < 4:
-                zpids_in_table.add(zpid)
-                
-            else:
-                flash("Too many!")
-                result = 0
-
-    zpids_in_table = list(zpids_in_table)
-    session['comp_table'] = zpids_in_table
-    print zpids_in_table, "$$$$$$$$$$$$$$$$$$$$$"
+    # session['comp_table'] = zpids_in_table
+    # # print zpids_in_table, "$$$$$$$$$$$$$$$$$$$$$"
 
     props_in_table = []
 
@@ -377,8 +341,11 @@ def update_comp_table():
         props_in_table.append(house)
     # props_in_table = Property.query.filter_by(zpid in zpids_in_table).all()
 
-
-    print props_in_table, "#######################"
+    print "################"
+    print "props_in_table"
+    print props_in_table
+    print "################"    
+    # print props_in_table, "#######################"
 
     # prop1 = props_in_table[0]
     # prop2 = props_in_table[1]
@@ -392,13 +359,78 @@ def update_comp_table():
     #         properties.append(house_data)
 
     #print prop1, prop2, prop3, prop4, "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-    house_dict = {}
-    for index, prop in enumerate(props_in_table, start=1):
-        house_dict[str(index)] = prop.tojson()
+    # house_dict = {}
+    # for index, prop in enumerate(props_in_table, start=1):
+        # house_dict[str(index)] = prop.tojson()
+    return render_template("comparison-table.html", props_in_table=props_in_table)  
 
-    house_dict['result'] = result
-    print house_dict    
-    return jsonify(**house_dict)
+@app.route('/clear-comparison-table', methods=['GET', 'POST'])
+def clear_comp_table():
+    if 'comp_table' in session:
+        del session['comp_table']
+        return "Cleared, please go back to previous page"
+    return "Not cleared, but go back anyway"
+
+@app.route("/update-comparison-table", methods=['GET','POST'])
+def update_comp_table():
+    """Adds or remove a property in comparison table"""
+    zpid = request.form.get('zpid')
+    is_in_table = request.form.get('is_in_table')
+    print is_in_table, "$$$$$$$$$"
+
+    zpids_in_table = set(session.get('comp_table',[]))
+    result = 1
+
+    print "zpids in table:",zpids_in_table
+
+    if is_in_table == "true":
+        if zpid in zpids_in_table:
+            zpids_in_table.remove(zpid)
+    else:
+        if zpid not in zpids_in_table:
+            if len(zpids_in_table) < 4:
+                zpids_in_table.add(zpid)
+                
+            else:
+                flash("Too many!")
+                result = 0
+    zpids_in_table = list(zpids_in_table)
+    session['comp_table'] = zpids_in_table
+    return str(result)
+
+    # zpids_in_table = list(zpids_in_table)
+    # session['comp_table'] = zpids_in_table
+    # # print zpids_in_table, "$$$$$$$$$$$$$$$$$$$$$"
+
+    # props_in_table = []
+
+    # for zpid in zpids_in_table:
+    #     house = Property.query.get(zpid)
+    #     props_in_table.append(house)
+    # props_in_table = Property.query.filter_by(zpid in zpids_in_table).all()
+
+
+    # print props_in_table, "#######################"
+
+    # prop1 = props_in_table[0]
+    # prop2 = props_in_table[1]
+    # prop3 = props_in_table[2]
+    # prop4 = props_in_table[3]
+
+    #list(enumerate(seasons))
+    # for zpid in props_in_table:
+    #     house_data = Property.query.get(zpid)
+    #     if house_data is not None:
+    #         properties.append(house_data)
+
+    #print prop1, prop2, prop3, prop4, "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+    # house_dict = {}
+    # for index, prop in enumerate(props_in_table, start=1):
+        # house_dict[str(index)] = prop.tojson()
+
+    # house_dict['result'] = result
+    # print house_dict    
+    # return jsonify(**house_dict)
 
 
 ##############################################

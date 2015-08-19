@@ -77,10 +77,8 @@ $(document).ready(function() {
 //Use the property-list app route to populate with properties from sessio
 $(document).ready(function() {
     console.log(this + "Load Table!");
-    $.ajax("/comparison-table", {
-        method: "GET",
-        datatype:"json",
-        data: null
+    $.ajax("/comparison-table").done( function(result) {
+        $("#container-table").html(result);
     });
 });
 
