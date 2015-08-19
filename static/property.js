@@ -76,7 +76,7 @@ $(document).ready(function() {
 //When property table loads, call ajax to update the lefthand column div
 //Use the property-list app route to populate with properties from sessio
 $(document).ready(function() {
-    console.log(this + "Load Left!");
+    console.log(this + "Load Table!");
     $.ajax("/comparison-table").done(function(result) {
         $("#comparison-table").html(result);
         });

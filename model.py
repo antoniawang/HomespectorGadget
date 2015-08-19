@@ -3,6 +3,7 @@
 import sys
 import os
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.inspection import inspect
 import xmltodict
 import json
 import requests
@@ -253,6 +254,16 @@ class Property(db.Model):
 
     # def to_dict(self):
     #     return getAttributes(Property)
+    
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        obj_dict = {c: getattr(self, c) for c in inspect(self).attrs.keys()}
+        print obj_dict
+        return obj_dict
+
+    @staticmethod
+    def serialize_list(houses):
+        return [house.serialize() for house in houses]
 
 
     def __repr__(self):
