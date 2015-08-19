@@ -205,7 +205,7 @@ def parse_address_search():
     else:
         this_property = property_from_url 
 
-    return render_template("address-confirmation.html", property_from_url=property_from_url, raw_address_text=str(property_from_url))
+    return render_template("address-confirmation.html", house=this_property)
 
 # USE THIS TO CREATE THE MY PROFILE PAGE
 # @app.route("/users/<int:user_id>")
@@ -381,8 +381,13 @@ def update_comp_table():
     #         properties.append(house_data)
 
     #print prop1, prop2, prop3, prop4, "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-    print Property.serialize_list(props_in_table)
-    return jsonify(properties=Property.serialize_list(props_in_table))
+    house_dict = {}
+    for index, prop in enumerate(props_in_table, start=1):
+        house_dict[str(index)] = prop.tojson()
+
+    house_dict['result'] = result
+    print house_dict    
+    return jsonify(**house_dict)
 
 
 ##############################################

@@ -4,6 +4,7 @@ import sys
 import os
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.inspection import inspect
+from sqlalchemy.ext.declarative import declarative_base as real_declarative_base
 import xmltodict
 import json
 import requests
@@ -12,6 +13,10 @@ from xml.dom import minidom
 import urllib
 from datetime import datetime
 import sqlite3
+
+# Let's make this a class decorator
+declarative_base = lambda cls: real_declarative_base(cls=cls)
+
 
 # This is the connection to the SQLite database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -44,8 +49,6 @@ class User(db.Model):
         """Provide helpful representation when printed."""
 
         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
-
-
 
 
 class Property(db.Model):
@@ -265,20 +268,26 @@ class Property(db.Model):
     def serialize_list(houses):
         return [house.serialize() for house in houses]
 
+    @property
+    def columns(self):
+        return [ c.name for c in self.__table__.columns ]
+
+    @property
+    def columnitems(self):
+        return dict([ (c, getattr(self, c)) for c in self.columns ])
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<ZPID = %s: Address=%s \n %s, %s %s>" % (self.zpid, self.street, self.city, self.state, self.zipcode)
+        return '{}({})'.format(self.__class__.__name__, self.columnitems)
 
     def __str__(self):
         """Provide helpful representation when printed."""
 
-        return "ZPID = %s \n Is this your address: %s \n %s, %s %s?" % (self.zpid, self.street, self.city, self.state, self.zipcode)
+        return '{}({})'.format(self.__class__.__name__, self.columnitems)
 
-# Need create a similar class for neighborhoods
-#class Neighborhood(db.Model):
-    
+    def tojson(self):
+        return self.columnitems
 
 
 class UserProperty(db.Model):
