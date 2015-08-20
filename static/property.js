@@ -1,3 +1,13 @@
+//HOMEPAGE
+$(document).ready(function() {
+    $(this).load(function(){
+        $.ajax("/homepage").done(function(result) {
+            $('#contents').html(result);
+        });
+    });
+});
+
+
 //LOGIN
 //Makde modal appear
 $(document).ready(function() {
@@ -54,16 +64,6 @@ $(document).ready(function() {
         $("#address-confirm").css("display","none");
         $.post("/delete-property", {'Delete-Property': $(this).attr("id")});
         console.log("Deleted from session");
-    });
-});
-
-
-//When property table loads, call ajax to update the lefthand column div
-//Use the property-list app route to populate with properties from sessio
-$(document).ready(function() {
-    console.log(this + "Load Table!");
-    $.ajax("/comparison-table").done( function(result) {
-        $("#container-table").html(result);
     });
 });
 

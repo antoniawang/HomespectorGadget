@@ -30,10 +30,14 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.route('/', methods=['GET','POST'])
 def index():
-    """Homepage."""
+    """Base.html"""
 
+    return render_template("base.html")
+
+@app.route('/homepage')
+def homepage():
+    """Homepage"""
     return render_template("homepage.html")
-
 
 @app.route('/register', methods=['GET'])
 def register_form():
