@@ -23,6 +23,9 @@ $(document).ready(function() {
 //Pass the text contents to the search app route
 //Make the modal appear
 $(document).ready(function() {
+    $.ajax("/property-list").done(function(result) {
+        $("#left-col").html(result);
+    }); 
     $("#search-btn").click(function() {
         console.log("Search!");
 
@@ -54,24 +57,6 @@ $(document).ready(function() {
     });
 });
 
-//Make the address confimation window disapear when user clicks "Yes"
-$(document).ready(function() {
-    $("#confirm-yes").click(function() {
-        console.log("Make div disappear!");
-        $("#address-confirm").css("display","none");
-
-    });
-});
-
-
-//When property table loads, call ajax to update the lefthand column div
-//Use the property-list app route to populate with properties from sessio
-$(document).ready(function() {
-    console.log(this + "Load Left!");
-    $.ajax("/property-list").done(function(result) {
-        $("#left-col").html(result);
-    }); 
-});
 
 //When property table loads, call ajax to update the lefthand column div
 //Use the property-list app route to populate with properties from sessio

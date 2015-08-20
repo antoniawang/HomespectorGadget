@@ -245,9 +245,7 @@ def delete_property():
 def get_propeties_list():
     """Have user confirm the search results.
     Upon confirmation, add property to session.
-    Show list of properties stored in the session.
-
-    If a user is logged in, let them save a property to favorites."""
+    Show list of properties stored in the session."""
 
     
     #Get the properties stored in session or create an empty session
@@ -275,7 +273,10 @@ def get_propeties_list():
         results = db.session.query(UserProperty.zpid).filter_by(user_id=user_id).all()
         liked = [zpid for (zpid, ) in results]
 
-    return render_template("left-column.html", properties=properties, liked=liked)
+    props_in_table = [int(x) for x in session.get('comp_table',[])]
+    print "my comp table session is:", props_in_table, "$$$$$$$$$$$$$$$$$$$$$"
+
+    return render_template("left-column.html", properties=properties, liked=liked, props_in_table=props_in_table)
 
 
 @app.route("/add-favorites", methods=['POST'])
@@ -294,13 +295,9 @@ def add_to_favorites():
         raise Exception("No user logged in.")
 
     if liked:
-        print "deleting", liked
         db.session.delete(liked)
 
     else:
-        print "liked a property"
-        print "user id and zpid", user_id, zpid
-        
         new_like = UserProperty(user_id=user_id,
                                  zpid=zpid,
                                  time_saved=datetime.utcnow())
@@ -331,37 +328,13 @@ def delete_from_session():
 def generate_comparison_table():
     """Populate and change comparison table."""
     zpids_in_table = set(session.get('comp_table',[]))
-    # session['comp_table'] = zpids_in_table
-    # # print zpids_in_table, "$$$$$$$$$$$$$$$$$$$$$"
 
     props_in_table = []
 
     for zpid in zpids_in_table:
         house = Property.query.get(zpid)
         props_in_table.append(house)
-    # props_in_table = Property.query.filter_by(zpid in zpids_in_table).all()
 
-    print "################"
-    print "props_in_table"
-    print props_in_table
-    print "################"    
-    # print props_in_table, "#######################"
-
-    # prop1 = props_in_table[0]
-    # prop2 = props_in_table[1]
-    # prop3 = props_in_table[2]
-    # prop4 = props_in_table[3]
-
-    #list(enumerate(seasons))
-    # for zpid in props_in_table:
-    #     house_data = Property.query.get(zpid)
-    #     if house_data is not None:
-    #         properties.append(house_data)
-
-    #print prop1, prop2, prop3, prop4, "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-    # house_dict = {}
-    # for index, prop in enumerate(props_in_table, start=1):
-        # house_dict[str(index)] = prop.tojson()
     return render_template("comparison-table.html", props_in_table=props_in_table)  
 
 @app.route('/clear-comparison-table', methods=['GET', 'POST'])
@@ -376,12 +349,11 @@ def update_comp_table():
     """Adds or remove a property in comparison table"""
     zpid = request.form.get('zpid')
     is_in_table = request.form.get('is_in_table')
-    print is_in_table, "$$$$$$$$$"
 
     zpids_in_table = set(session.get('comp_table',[]))
     result = 1
 
-    print "zpids in table:",zpids_in_table
+    print "zpids in comparison table:",zpids_in_table, "***************************"
 
     if is_in_table == "true":
         if zpid in zpids_in_table:
@@ -398,41 +370,6 @@ def update_comp_table():
     session['comp_table'] = zpids_in_table
     return str(result)
 
-    # zpids_in_table = list(zpids_in_table)
-    # session['comp_table'] = zpids_in_table
-    # # print zpids_in_table, "$$$$$$$$$$$$$$$$$$$$$"
-
-    # props_in_table = []
-
-    # for zpid in zpids_in_table:
-    #     house = Property.query.get(zpid)
-    #     props_in_table.append(house)
-    # props_in_table = Property.query.filter_by(zpid in zpids_in_table).all()
-
-
-    # print props_in_table, "#######################"
-
-    # prop1 = props_in_table[0]
-    # prop2 = props_in_table[1]
-    # prop3 = props_in_table[2]
-    # prop4 = props_in_table[3]
-
-    #list(enumerate(seasons))
-    # for zpid in props_in_table:
-    #     house_data = Property.query.get(zpid)
-    #     if house_data is not None:
-    #         properties.append(house_data)
-
-    #print prop1, prop2, prop3, prop4, "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-    # house_dict = {}
-    # for index, prop in enumerate(props_in_table, start=1):
-        # house_dict[str(index)] = prop.tojson()
-
-    # house_dict['result'] = result
-    # print house_dict    
-    # return jsonify(**house_dict)
-
-
 ##############################################
 @app.route("/map", methods=['GET'])
 def show_map():
@@ -440,7 +377,6 @@ def show_map():
     then allow to zoom in on properties to show pindrops
     or heat maps"""
 
-    print mapbox_api_key, "***********************************"
 
     return render_template("map.html", mapbox_api_key=mapbox_api_key)
 
