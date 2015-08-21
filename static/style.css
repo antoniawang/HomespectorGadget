@@ -56,7 +56,7 @@ div#left-col {
 .comp-table{
 	display: table;
 	border-collapse: collapse;
-	margin-left: 20%;
+/*	margin-left: 20%;*/
 	margin-top: 0;
 	width: 80%;
 	z-index: 10000;
@@ -75,3 +75,6 @@ div#left-col {
 	min-width: 20%;
 }
 
+#contents {
+	margin-left: 20%;
+}

@@ -17,6 +17,10 @@ import os
 
 from collections import OrderedDict
 
+import string
+
+import math
+
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -375,6 +379,122 @@ def update_comp_table():
     return str(result)
 
 ##############################################
+
+def get_session_longlats():
+    longlat_list = []
+    props_in_list = session.get('properties',[])
+    print "session['properties'] is ", props_in_list
+    for zpid in props_in_list:
+        this_house = Property.query.filter(Property.zpid == int(zpid)).first()
+        longitude = this_house.longitude
+        latitude = this_house.latitude
+        longlat_list.append((longitude,latitude))
+
+    return longlat_list
+
+
+# DEFAULT MAP
+#  generate marker text for an API call of the form:   {name}-{label}+{color}({lon},{lat})
+#  example : pin-l-park+482(-73.975,40.767)
+#   NAME MUST BE pin-l, pin-m or pin-s
+
+
+def make_marker_text(longlat_tuples_list):
+
+    marker_text_list = []
+    marker_label_list = list(string.ascii_lowercase)
+    color = '84638F'
+    name = 'pin-m'
+    
+    for index, longlat_tuple in enumerate(longlat_tuples_list):
+        label = marker_label_list[index]
+        lon, lat = longlat_tuple
+        marker_text = name + '-' + label + '+' + color + '(' + str(lon) + ',' + str(lat) + ')'
+        marker_text_list.append(marker_text)
+
+    return marker_text_list
+
+
+@app.route("/default-map", methods=['GET'])
+def show_default_map():
+    """Get the longitude and latitudes from the get_session_longlats.
+    Generate marker text from make_marker_text for each house.
+    Show the properties stored in session on a map
+    then allow to zoom in on properties to show pindrops
+    or heat maps"""
+
+    longlat_tuples = get_session_longlats()
+
+    marker_string_list = make_marker_text(longlat_tuples)
+
+    marker_api_string = ",".join(marker_string_list)
+
+    zoom_level = 12
+
+    lon_center = sum([float(lon) for lon, lat in longlat_tuples])/len(longlat_tuples)
+    lat_center = sum([float(lat) for lon, lat in longlat_tuples])/len(longlat_tuples)
+
+    lon_lat_zoom = str(lon_center) + ',' + str(lat_center) + ',' + str(zoom_level)
+
+    imgwidth = 800
+    imgheight = 600
+
+    imgsize = str(imgwidth) + 'x' + str(imgheight)
+
+    mapbox_api_key = 'pk.eyJ1IjoiYW50b25pYXdhbmciLCJhIjoiNTc1OGJmMDZlNjQ4ZjlhMmRkZTU4ZGMwOTMxZDg2ODAifQ.nVRLoueu9vmdpYYDc_-zgg'
+
+    new_src = 'https://api.mapbox.com/v4/mapbox.streets/' + marker_api_string + '/' + lon_lat_zoom + '/' + imgsize + '.png?access_token=' + mapbox_api_key
+
+    return render_template("map.html", imgwidth=imgwidth, imgheight=imgheight, src=new_src)
+
+
+#TO DO: calculate optimal zoom using math
+
+# def get_zoom_level(bounds, map_dim):
+#     world_dim = { height: 256, width: 256 }; 
+#     zoom_max = 13
+
+#     def lat_radius(lat):
+#         sin = math.sin(lat * math.pi / 180);
+#         rad_x2 - math.log((1 + sin) / (1 - sin)) / 2
+#         return max(min(rad_x2, math.pi), -math.pi) / 2
+
+#     def zoom(map_px, world_px, fraction):
+#         return floor(math.log(map_px / world_px / fraction) / math.log(2))
+
+#     northest 
+
+"""
+function getBoundsZoomLevel(bounds, mapDim) {
+    var WORLD_DIM = { height: 256, width: 256 };
+    var ZOOM_MAX = 21;
+
+    function latRad(lat) {
+        var sin = Math.sin(lat * Math.PI / 180);
+        var radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
+        return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
+    }
+
+    function zoom(mapPx, worldPx, fraction) {
+        return Math.floor(Math.log(mapPx / worldPx / fraction) / Math.LN2);
+    }
+
+    var ne = bounds.getNorthEast();
+    var sw = bounds.getSouthWest();
+
+    var latFraction = (latRad(ne.lat()) - latRad(sw.lat())) / Math.PI;
+
+    var lngDiff = ne.lng() - sw.lng();
+    var lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+
+    var latZoom = zoom(mapDim.height, WORLD_DIM.height, latFraction);
+    var lngZoom = zoom(mapDim.width, WORLD_DIM.width, lngFraction);
+
+    return Math.min(latZoom, lngZoom, ZOOM_MAX);
+}
+"""
+
+##############################################
 @app.route("/map", methods=['GET'])
 def show_map():
     """Show the properties stored in session on a map
@@ -382,9 +502,7 @@ def show_map():
     or heat maps"""
 
 
-    return render_template("map.html", mapbox_api_key=mapbox_api_key)
-
-
+    return render_template("map.html")
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

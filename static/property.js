@@ -67,3 +67,24 @@ $(document).ready(function() {
     });
 });
 
+
+//Switch to table view
+$(document).ready(function() {
+    $("#map-view-select").click(function() {
+        console.log("Make map appear!");
+        $.ajax("/default-map").done(function(result) {
+            $("#contents").html(result);
+        }); 
+    });
+});
+
+//Switch to table view
+$(document).ready(function() {
+    $("#table-view-select").click(function() {
+        console.log("Make map appear!");
+        $.ajax("/comparison-table").done(function(result) {
+            $("#contents").html(result);
+        }); 
+    });
+});
+

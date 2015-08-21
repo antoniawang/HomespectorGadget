@@ -104,6 +104,8 @@
         </form>         
 
             <ul class="nav navbar-nav navbar-right" id="session-login">
+                  <li><a href="/#" id="table-view-select">Table View</a></li>
+                  <li><a href="/#" id="map-view-select">Map View</a></li>
               {% if "user_id" in session %}
                   <li><a href="/users/{{ session['user_id'] }}">Profile</a></li>
                   <li><a href="/logout">Logout</a></li>
@@ -130,6 +132,8 @@
 {% endblock %}
 
 <div id="contents">
+  Welcome to Prop Shop. Begin by searching for an street address with city+state or zip code. For example:<br>
+  1600 Pennsylvania Ave. Washington, D.C.
 </div>
 </body>
 </html>
