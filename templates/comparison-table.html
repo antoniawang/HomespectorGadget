@@ -3,53 +3,64 @@
 <div class="comp-table" id="container-table">
     <div class="comp-row" id="r1">
         <div class="comp-col" id="specs-col">
-
-                
-            <p>Click Here!</p>
-            <p>Market Status</p>
-            <p>List price</p>
-            <p>Street</p>
-            <p>City</p>
-            <p>State</p>
-            <p>Zip Code</p>
-            <p>Bedrooms</p>
-            <p>Bathrooms</p>
-            <p>Lot Size (Sq.Ft.)</p>
-            <p>Finished Area (Sq.Ft.)</p>
-            <p>Zestimate</p>
-            <p>Year Built</p>
-            <p>Last Sold Date</p>
-            <p>Last Sold Price</p>
-            <p>Use Code</p>
-            <p>Latitude</p>
-            <p>Longitude</p>
-            <p>WalkScore</p>
-            <p>Transit Score</p>
-
+            <table class="table table-striped"><thead>
+                <tr><th>
+                Specs
+                </th></tr>
+            </thead>        
+            <tbody>
+                <tr><td>Click Here!</td></tr>
+                <tr><td>Market Status</td></tr>
+                <tr><td>List price</td></tr>
+                <tr><td>Street</td></tr>
+                <tr><td>City</td></tr>
+                <tr><td>State</td></tr>
+                <tr><td>Zip Code</td></tr>
+                <tr><td>Bedrooms</td></tr>
+                <tr><td>Bathrooms</td></tr>
+                <tr><td>Lot Size (Sq.Ft.)</td></tr>
+                <tr><td>Finished Area (Sq.Ft.)</td></tr>
+                <tr><td>Zestimate</td></tr>
+                <tr><td>Year Built</td></tr>
+                <tr><td>Last Sold Date</td></tr>
+                <tr><td>Last Sold Price</td></tr>
+                <tr><td>Use Code</td></tr>
+                <tr><td>Latitude</td></tr>
+                <tr><td>Longitude</td></tr>
+                <tr><td>WalkScore</td></tr>
+                <tr><td>Transit Score</td></tr>
+            </tbody></table>
         </div>
+
         {% for house in props_in_table %}
-        <div class="comp-col" id="prop{{loop.index}}-col">
-                
-            <p>Click Here!</p>
-            <p>Market Status</p>
-            <p>List price</p>
-            <p>{{ house.street }}</p>
-            <p>{{ house.city }}</p>
-            <p>{{ house.state }}</p>
-            <p>{{ house.zipcode }}</p>
-            <p>{{ house.bedrooms }}</p>
-            <p>{{ house.bathrooms }}</p>
-            <p>{{ house.lotSizeSqFt }}</p>
-            <p>{{ house.finishedSqFt }}</p>
-            <p>{{ house.z_amount }}</p>
-            <p>{{ house.yearBuilt }}</p>
-            <p>{{ house.lastSoldDate }}</p>
-            <p>{{ house.lastSoldPrice }}</p>
-            <p>{{ house.useCode }}</p>
-            <p>{{ house.latitude }}</p>
-            <p>{{ house.longitude }}</p>
-            <p>WalkScore</p>
-            <p>Transit Score</p>
+        <div class="comp-col" id="prop{{ loop.index }}-col">
+            <table class="table"><thead>
+                <tr><th>
+                Property {{ loop.index }}
+                </th></tr>
+            </thead>        
+            <tbody>        
+                <tr><td>Click Here!</td></tr>
+                <tr><td>Market Status</td></tr>
+                <tr><td>List price</td></tr>
+                <tr><td>{{ house.street }}</td></tr>
+                <tr><td>{{ house.city }}</td></tr>
+                <tr><td>{{ house.state }}</td></tr>
+                <tr><td>{{ house.zipcode }}</td></tr>
+                <tr><td>{{ house.bedrooms }}</td></tr>
+                <tr><td>{{ house.bathrooms }}</td></tr>
+                <tr><td>{{ house.lotSizeSqFt }}</td></tr>
+                <tr><td>{{ house.finishedSqFt }}</td></tr>
+                <tr><td>{{ house.z_amount }}</td></tr>
+                <tr><td>{{ house.yearBuilt }}</td></tr>
+                <tr><td>{{ house.lastSoldDate }}</td></tr>
+                <tr><td>${{ house.lastSoldPrice }}</td></tr>
+                <tr><td>{{ house.useCode }}</td></tr>
+                <tr><td>{{ house.latitude }}</td></tr>
+                <tr><td>{{ house.longitude }}</td></tr>
+                <tr><td>WalkScore</td></tr>
+                <tr><td>Transit Score</td></tr>
+            </tbody></table>
         </div>             
         {% endfor %}
 
