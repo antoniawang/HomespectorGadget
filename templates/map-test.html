@@ -1,0 +1,81 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+var mapbox_api_key = 'pk.eyJ1IjoiYW50b25pYXdhbmciLCJhIjoiNTc1OGJmMDZlNjQ4ZjlhMmRkZTU4ZGMwOTMxZDg2ODAifQ.nVRLoueu9vmdpYYDc_-zgg';
+
+console.log(mapbox_api_key)
+
+
+</script>
+
+</head>
+
+<body>
+<!--<iframe style='width: 75%; height: 75%' id='map_display' src=''></iframe>-->
+<img id='map_display' style='width:400px;height=400px' src="">
+
+<p>
+    <label for='latitude'>Latitude</label><input type='number' id='latitude' value='37.396'><br/>
+    <label for='longitude'>Longitude</label><input type='number' id='longitude' value='-122.0721013'><br/>
+
+    <br/>
+    Marker 1:
+    <label for='mark1-latitude'>Latitude</label><input type='number' id='mark1-latitude' value='37.397'>
+    <label for='mark1-longitude'>Longitude</label><input type='number' id='mark1-longitude' value='-122.0721013'><br/>
+    <label for='mark1-label'>Label</label><input type='text' id='mark1-label' value='A'><br/>
+
+    <br/>
+    Marker 2:
+    <label for='mark2-latitude'>Latitude</label><input type='number' id='mark2-latitude' value='37.396'>
+    <label for='mark2-longitude'>Longitude</label><input type='number' id='mark2-longitude' value='-122.1711013'><br/>
+    <label for='mark2-label'>Label</label><input type='text' id='mark2-label' value='B'><br/>
+
+    <button id='update_map'>Update Map</button> 
+</p>
+
+<script>
+
+// generate marker text for an API call of the form:   {name}-{label}+{color}({lon},{lat})
+// example : pin-l-park+482(-73.975,40.767)
+//  NAME MUST BE pin-l, pin-m or pin-s
+function make_marker_text(lat, lon, label, name, color) {
+    return name + '-' + label + '+' + color + '(' + lon + ',' + lat + ')';
+}
+
+// on update_map click
+$("#update_map").click( function() {
+
+    // get the latitude and longitude from the inputs
+    var lat = $('#latitude').val();
+    var lon = $('#longitude').val();
+    var zoomlevel = 15;
+    var imgwidth = 400;
+    var imgheight = 400;
+
+    // generate marker stuff (optional)
+    var home_marker = make_marker_text(lat, lon, "star", "pin-m", "008800"); // this is "you"
+    var mark1_txt = make_marker_text($("#mark1-latitude").val(), $("#mark1-longitude").val(), $("#mark1-label").val().toLowerCase(), "pin-m", "880000");
+    var mark2_txt = make_marker_text($("#mark2-latitude").val(), $("#mark2-longitude").val(), $("#mark2-label").val().toLowerCase(), "pin-m", "000099");
+
+    // generate the new source URL for the iframe
+    // the overlay contains things like markers. separate each marker tag text (up to 100) with a comma
+    var overlay = home_marker + ',' + mark1_txt + ',' + mark2_txt;
+    // the center coordinate should be supplied in the form longitude,latitude,zoom_level
+    var lonlatzoom = lon + ',' + lat + ',' + zoomlevel;
+    // provide an image size, in pixels
+    var imgsize = imgwidth+'x'+imgheight;
+    // put it all together
+    var new_src = 'https://api.mapbox.com/v4/mapbox.streets/' + overlay + '/' + lonlatzoom + '/' + imgsize + '.png?access_token=' + mapbox_api_key;
+
+    // update the iframe's src attribute
+    $("#map_display").attr("src", new_src);
+    $("#debug").text('This API call was<br/>:' + new_src);
+});
+
+
+</script>
+<p id='debug'></p>
+</body>
+
+</html>

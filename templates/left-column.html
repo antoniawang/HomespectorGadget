@@ -1,0 +1,144 @@
+{% block content %}
+<script>
+    // When any user clicks on a property's star
+    // Add the record to connect user and property in the UserProperty table
+    $(document).ready(function() {
+        $("span.glyphicon-star").click(function() { //highlight the star
+            console.log(this);
+          $(this).toggleClass("yellow");
+
+
+    // Send the new property to the database
+        $.ajax("/add-favorites", {
+            method: "POST",
+            datatype:"json",
+            data: {'property': $(this).attr("id")} 
+            }).done(function() {
+                    console.log("Victory! Fave changed successfully");  // confirm in the console
+            });
+        });
+    });
+
+
+    // When any user clicks on a property's "X"
+    // Delete this property from the session
+    $(document).ready(function() {
+        $("span.glyphicon-pushpin").click(function() {    //highlight the star
+            console.log(this);
+
+          var that = this;
+        // Send the new property to the database
+        $.ajax("/delete-from-session", {
+            method: "POST",
+            datatype:"json",
+            data: {'property': $(this).attr("id")}  // the remove class color doesn't work right now
+            }).done(function() {
+                    $(this).removeClass("blue");
+                    $(this).addClass("white");
+                    alert(this)
+                    console.log(that.closest('tr'));
+                    setTimeout(function(){
+                        that.closest('tr').remove();
+                    }, 1000);
+                    $.ajax("/comparison-table").done(function(result) {
+                        $("#contents").html(result);
+                    });
+                    console.log("Victory! Deleted from session."); // confirm in the console
+            });
+        });
+
+        $("span.glyphicon-check").click(function() {    //highlight the star
+            console.log(this);
+            var isGreen = $(this).hasClass("green");
+            var updateData = null;
+            var that=this;
+            if (!isGreen) {
+                console.log("Add to comparison")
+                updateData = {'zpid':$(this).attr("id"),
+                            'is_in_table': false};
+            
+            } else {
+                console.log("Remove from comparison")
+                updateData = {'zpid':$(this).attr("id"),
+                'is_in_table': true};
+
+            }
+
+            //Update the comparison table
+            $.ajax("/update-comparison-table", {
+                method: "POST",
+                datatype:"json",
+                data: updateData
+                }).done(function(result) {
+                    console.log("Update table result was: " + result);
+                    if (result != "1") {
+                        console.log("Comparison table was NOT updated");
+                    } else {
+                        console.log("Comparison table was updated");
+                        $(that).toggleClass("green");
+                        $.ajax("/comparison-table").done( function(result) {
+                            console.log("Got new HTML for the comparison table: " + result);
+                            $("#contents").html(result);
+                        });
+                    }
+                    // if (result.result != "1") {
+                    //     console.log("Not successfully done!");
+                    // } else {
+                    //     console.log("successfully!");
+                    //     console.log(this);
+                    //     $(that).toggleClass("green");
+                    //     // renderCompTable(result);
+                    //     console.log("Gonna render comparison-table after update!");
+                    //     console.log(result);
+                    //     var something = result;
+                    //     $.post("/comparison-table", {houses: something
+                    //     }).done( function(inner_result) {
+                    //         console.log("I will render this: " + inner_result)
+                    //         $('#container-table').html(inner_result);
+                    //     });
+                    // }
+
+            });
+        });
+    });
+
+
+
+</script>
+    <table class="table table-striped">
+        <thead>
+            <tr><th>
+                <h4>Houses to Compare</h4>
+            </th></tr>
+        </thead>        
+        <tbody>
+        {% for house in properties %}
+        <tr>
+            <td>{{ house.street }}            
+             {% if "user_id" in session %}
+                <span class="glyphicon glyphicon-star
+                {% if house.zpid in liked %}
+                yellow
+                {% endif %}
+                " id="{{ house.zpid }}" aria-hidden="true"></span> 
+
+                {% endif %} <br>
+
+                {{ house.city }}, {{ house.state }} {{ house.zipcode }}
+
+                <span class="glyphicon glyphicon-check
+                {% if house.zpid in props_in_table %}
+                green
+                {% endif %}
+                " id="{{ house.zpid }}" aria-hidden="true"></span>   
+
+                <span class="glyphicon glyphicon-pushpin blue" id="{{ house.zpid }}" aria-hidden="true"></span>
+
+         
+
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

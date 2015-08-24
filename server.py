@@ -128,50 +128,7 @@ def logout():
     flash("Logged Out.")
     return redirect("/")
 
-
-# ######################################################
-# @app.route('/search', methods=['GET'])
-# def parse_address_search():
-#     """Parses the address for API call"""
-#     if request.args:
-#         raw_address_text = request.args.get("address_search")
-#     raw_address_parsed = usaddress.tag(raw_address_text)
-#     address_ordered_dict = raw_address_parsed[0]
-    
-#     address_keys = ['AddressNumber','StreetName','StreetNamePostType','OccupancyType','OccupancyIdentifier']
-#     address_string_list=[]
-#     for key in address_keys:
-#         if address_ordered_dict.get(key) is not None:
-#             address_string_list.append(address_ordered_dict[key])
-#     address_string = ' '.join(address_string_list)
-#     address_url_encode = address_string.replace(' ','+').strip()
-
-    
-#     citystatezip_string = address_ordered_dict.get('PlaceName','')
-#     citystatezip_string += '%2C ' + address_ordered_dict.get('StateName','')
-#     citystatezip_string += ' ' + address_ordered_dict.get('ZipCode','')
-#     citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
-
-#     property_from_url = Property.generate_from_address(address=address_url_encode,
-#                         citystatezip=citystatezip_url_encode)  
-
-#     #instantiate a session
-#     if 'properties' not in session.keys():
-#         session['properties'] = []
-
-#     if property_from_url.zpid not in session['properties']:
-#         session['properties'].append(property_from_url.zpid)
-    
-#     this_property = Property.query.filter(Property.zpid == property_from_url.zpid).first()
-
-#     if this_property is None:
-#         db.session.add(property_from_url)
-#         db.session.commit()
-#     else:
-#         this_property = property_from_url 
-                       
-#     print session['properties'], "********HITHERE*********************"
-#     return render_template("address-confirmation.html", property_from_url=property_from_url, raw_address_text=str(property_from_url))
+###########################################################
 
 @app.route('/search', methods=['GET'])
 def parse_address_search():
@@ -195,25 +152,33 @@ def parse_address_search():
     citystatezip_string += ' ' + address_ordered_dict.get('ZipCode','')
     citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
 
-    property_from_url = Property.generate_from_address(address=address_url_encode,
-                        citystatezip=citystatezip_url_encode)  
+    property_from_url, error_code = Property.generate_from_address(address=address_url_encode,
+                        citystatezip=citystatezip_url_encode) 
 
     #instantiate a session
     if 'properties' not in session.keys():
         session['properties'] = []
 
-    if property_from_url.zpid not in session['properties']:
-        session['properties'].append(property_from_url.zpid)
-    
-    this_property = Property.query.filter(Property.zpid == property_from_url.zpid).first()
+    if error_code == Property.ERROR_OK:    
+        if property_from_url.zpid not in session['properties']:
+            session['properties'].append(property_from_url.zpid)
+        
+        this_property = Property.query.filter(Property.zpid == property_from_url.zpid).first()
 
-    if this_property is None:
-        db.session.add(property_from_url)
-        db.session.commit()
+        if this_property is None:
+            db.session.add(property_from_url)
+            db.session.commit()
+        else:
+            this_property = property_from_url 
+
+        return render_template("address-confirmation.html", house=this_property)
+
+    elif error_code == Property.ERROR_MANY:
+        return render_template("error-dialog.html", error_message = "Ambiguous Result. Please check your address and specify a unique property.")
+
     else:
-        this_property = property_from_url 
-
-    return render_template("address-confirmation.html", house=this_property)
+        return render_template("error-dialog.html", error_message = "No property found. Please search again.")
+    
 
 # USE THIS TO CREATE THE MY PROFILE PAGE
 # @app.route("/users/<int:user_id>")
@@ -234,18 +199,16 @@ def delete_property():
     if wrong address was returned."""
 
     zpid = request.form['Delete-Property']
+
     props_in_list = session['properties']
-    props_in_list.pop()
+    index = props_in_list(zpid)
+    if index >=0 :
+        props_in_list.pop(index)
 
-    wrong_house = Property.query.filter_by(zpid=zpid).first()
-    db.session.delete(wrong_house)
 
-    db.session.commit()
-
-    print props_in_list, "********HELLOWORLD**********"
     flash("Please search again")
 
-    return "Deleted ", wrong_house
+    return "Deleted"
 
 
 
@@ -282,7 +245,6 @@ def get_propeties_list():
         liked = [zpid for (zpid, ) in results]
 
     props_in_table = [int(x) for x in session.get('comp_table',[])]
-    print "my comp table session is:", props_in_table, "$$$$$$$$$$$$$$$$$$$$$"
 
     return render_template("left-column.html", properties=properties, liked=liked, props_in_table=props_in_table)
 
@@ -325,12 +287,18 @@ def delete_from_session():
 
     #delete from session
     props_in_list = session.get('properties',[])
+
     zpid = request.form.get('property') 
     print "zpid is: ", zpid, "and type: ", type(zpid), "$$$$$$$$$$"
 
     if zpid in props_in_list:
         zpid_index = props_in_list.index(zpid)
         props_in_list.pop(zpid_index)
+
+    zpids_in_table = session.get('comp_table',[])
+    if zpid in zpids_in_table:
+        zpid_index2 = zpids_in_table.index(zpid)
+        zpids_in_table.pop(zpid_index2)
 
 
     return "Victory"
@@ -366,8 +334,6 @@ def update_comp_table():
 
     zpids_in_table = set(session.get('comp_table',[]))
     result = 1
-
-    print "zpids in comparison table:",zpids_in_table, "***************************"
 
     if is_in_table == "true":
         if zpid in zpids_in_table:
@@ -453,36 +419,6 @@ def get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth):
 
     return zoom
 
-
-"""
-function getBoundsZoomLevel(bounds, mapDim) {
-    var WORLD_DIM = { height: 256, width: 256 };
-    var ZOOM_MAX = 21;
-
-    function latRad(lat) {
-        var sin = Math.sin(lat * Math.PI / 180);
-        var radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
-        return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
-    }
-
-    function zoom(mapPx, worldPx, fraction) {
-        return Math.floor(Math.log(mapPx / worldPx / fraction) / Math.LN2);
-    }
-
-    var ne = bounds.getNorthEast();
-    var sw = bounds.getSouthWest();
-
-    var latFraction = (latRad(ne.lat()) - latRad(sw.lat())) / Math.PI;
-
-    var lngDiff = ne.lng() - sw.lng();
-    var lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
-
-    var latZoom = zoom(mapDim.height, WORLD_DIM.height, latFraction);
-    var lngZoom = zoom(mapDim.width, WORLD_DIM.width, lngFraction);
-
-    return Math.min(latZoom, lngZoom, ZOOM_MAX);
-}
-"""
 
 @app.route("/default-map", methods=['GET'])
 def show_default_map():

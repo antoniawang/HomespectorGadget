@@ -1,0 +1,22 @@
+{% block content %}
+<script>
+
+//Generic error dialog template
+
+$(document).ready(function() {
+    $("#error-ok").click(function() {
+        console.log("Make div disappear!");
+        $("#address-confirm").css("display","none");
+  });
+});
+
+</script>
+
+<div class="top-right-nav" style="width:50%;">
+  <h3>ERROR!</h3>
+  <br>
+    {{ error_message }}
+  <br>
+<a href="#" id="error-ok" class="btn btn-large btn-primary">Close</a>
+</div>
+{% endblock %}

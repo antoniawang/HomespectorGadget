@@ -1,3 +1,14 @@
+//VIEW STATE
+PageState = {
+    TABLE : 0,
+    MAP: 1
+};
+
+var viewState = PageState.TABLE;
+
+
+
+
 //HOMEPAGE
 $(document).ready(function() {
     $(this).load(function(){
@@ -57,21 +68,22 @@ $(document).ready(function() {
 });
 
 
-//Make the address confimation window disapear when user clicks "No"
-$(document).ready(function() {
-    $("#confirm-no").click(function() {
-        console.log("Make div disappear!");
-        $("#address-confirm").css("display","none");
-        $.post("/delete-property", {'Delete-Property': $(this).attr("id")});
-        console.log("Deleted from session");
-    });
-});
+// //Make the address confimation window disapear when user clicks "No"
+// $(document).ready(function() {
+//     $("#confirm-no").click(function() {
+//         console.log("Make div disappear!");
+//         $("#address-confirm").css("display","none");
+//         $.post("/delete-property", {'Delete-Property': $(this).attr("id")});
+//         console.log("Deleted from session");
+//     });
+// });
 
 
 //Switch to table view
 $(document).ready(function() {
     $("#map-view-select").click(function() {
         console.log("Make map appear!");
+        viewState = PageState.MAP;
         $.ajax("/default-map").done(function(result) {
             $("#contents").html(result);
         }); 
@@ -81,7 +93,8 @@ $(document).ready(function() {
 //Switch to table view
 $(document).ready(function() {
     $("#table-view-select").click(function() {
-        console.log("Make map appear!");
+        console.log("Make table appear!");
+        viewState = PageState.TABLE;
         $.ajax("/comparison-table").done(function(result) {
             $("#contents").html(result);
         }); 

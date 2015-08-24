@@ -4,8 +4,6 @@ env
 ZillowNeighborhoods-CA/
 test/
 *OLD*
-*temp*
 seed.py
 *.db
 templates/search-form.html
-templates/map.html

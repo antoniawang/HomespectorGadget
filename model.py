@@ -56,6 +56,10 @@ class Property(db.Model):
     A wrapper object that corresponds to rows in the properties table.
     """
 
+    ERROR_OK = 0
+    ERROR_NO_RESULTS = 1
+    ERROR_MANY = 2
+
     def __init__(self,
                  zpid=None,
                  homedetails=None,
@@ -145,7 +149,16 @@ class Property(db.Model):
         dom_zillow_house = minidom.parse(response)
 
         # retrieve example data by tag
-        for node in dom_zillow_house.getElementsByTagName("result"):
+        results = dom_zillow_house.getElementsByTagName("result")
+        print "results are", results, "with length", len(results), "$$$$$$$$$$$$$$$$"
+
+        if len(results) > 1:
+            return None, Property.ERROR_MANY
+
+        if len(results) == 0:
+            return None, Property.ERROR_NO_RESULTS
+
+        for node in results:
 
             zpid = (handleTok(node.getElementsByTagName('zpid'))).encode("utf8").strip()
             homedetails = (handleTok(node.getElementsByTagName('homedetails'))).encode("utf8").strip()
@@ -172,31 +185,6 @@ class Property(db.Model):
             lastSoldPrice = (handleTok(node.getElementsByTagName('lastSoldPrice'))).encode("utf8").strip()
             z_amount = (handleTok(node.getElementsByTagName('amount'))).encode("utf8").strip()
 
-        print "zpid:", zpid
-        print "homedetails:", homedetails
-        print "street:", street
-        print "city:", city
-        print "state:", state
-        print "zipcode:", zipcode
-
-        print "latitude:", latitude
-        print "longitude:", longitude
-        print "FIPScounty:", FIPScounty
-        print "useCode:", useCode
-        
-        print "taxAssessmentYear:", taxAssessmentYear
-        print "taxAssessment:", taxAssessment
-        print "year built:", yearBuilt
-        print "lotSizeSqFt:", lotSizeSqFt
-        print "Square feet:", finishedSqFt
-        print "number of bedrooms:", bedrooms
-        print "number of bathrooms:", bathrooms
-        print "number of total rooms:", totalRooms
-
-        print "Last Sold Date:", lastSoldDate
-        print "lastSoldPrice:", lastSoldPrice
-        print "zestimate amount:", z_amount
-
         new_property = Property(zpid=zpid,
                         homedetails=homedetails,
                         street=street,
@@ -220,7 +208,7 @@ class Property(db.Model):
                         z_amount=z_amount
                         #time_saved=datetime.utcnow()
                         )
-        return new_property
+        return new_property, Property.ERROR_OK
 
     # MAY NOT NEED THIS
     @classmethod
