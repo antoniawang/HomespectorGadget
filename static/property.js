@@ -29,6 +29,9 @@ $(document).ready(function() {
             console.log("Make div appear!"); 
             // confirm in the console
             $("#login-form").css("display","block");
+            $.ajax("/property-list").done(function(result) {
+                $("#left-col").html(result);
+            }); 
         });
     });
 });    

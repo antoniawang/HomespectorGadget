@@ -104,7 +104,11 @@ def login_process():
         return redirect("/login")
 
     session["user_id"] = user.user_id
-    session['properties'] = []
+
+    liked = UserProperty.query.filter_by(user_id=user.user_id).all()
+    liked = [x.zpid for x in liked]
+
+    session['properties'] = liked
     session['comp_table'] = []
 
     flash("Hello, %s!" % user.fname)
