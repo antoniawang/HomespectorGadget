@@ -1,47 +1,76 @@
-{% extends 'base.html' %}
 {% block content %}
-<div class="well spaced" style="width:40%;">
-<h1>Register</h1>
+<script>
+//Ajax to make registration disappear upon registering
 
-<form action="register" method="POST">
+$(document).ready(function() {
+    $("#registration-submit").click(function(event) {
+        event.preventDefault();
+        console.log("Make form disappear!");
+        $.ajax({ url: "/register", 
+            method: 'POST',
+            datatype: 'json',
+            data:
+             {'fname': $("#register-fname").val(),
+            'lname': $("#register-lname").val(),
+            'email': $("#register-email").val(),
+            'password':$ ("#register-password").val(),
+            'zipcode':$('#register-zipcode').val()}
+            })
+            .done(function(result) {
+                console.log(result + "Register!");
+                //check if user already registered
+                $("#address-confirm").css("display","block");
+                $("#address-confirm").html(result);
+                });
+            console.log("Logged in");
+            $("#login-form").css("display","none");
+    });
+});
+
+</script>
+
+<div class="well spaced top-right-nav">
+<h5>Register</h5>
+
+<form>
 
     <div class="form-group">
         <label>
             First Name
-            <input type="text" name="fname" class="form-control">
+            <input type="text" name="fname" id='register-fname' class="form-control">
         </label>
     </div>
 
     <div class="form-group">
         <label>
             Last Name
-            <input type="text" name="lname" class="form-control">
+            <input type="text" name="lname" id='register-lname' class="form-control">
         </label>
     </div>
 
     <div class="form-group">
         <label>
             Email -- This will be your login.
-            <input type="email" name="email" class="form-control">
+            <input type="email" name="email" id='register-email' class="form-control">
         </label>
     </div>
 
     <div class="form-group">
         <label>
             Password
-            <input type="password" name="password" class="form-control">
+            <input type="password" name="password" id='register-password' class="form-control">
         </label>
     </div>
 
     <div class="form-group">
         <label>
             Zip Code
-            <input type="text" name="zipcode" class="form-control">
+            <input type="text" name="zipcode" if='register-zipcode' class="form-control">
         </label>
     </div>
 
     <div class="form-group">
-        <input type="submit" value="Create my account" class="btn btn-danger">
+        <input id="registration-submit" type="submit" value="Create my account" class="btn btn-danger">
     </div>
 
 </form>

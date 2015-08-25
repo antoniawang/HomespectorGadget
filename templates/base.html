@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Prop Shop</title>
+    <title>Homespector Gadget</title>
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="static/property.js"></script>
@@ -94,7 +94,8 @@
             <div class="form-group">
               <label>
               Enter an address 
-              <input id="address-search" type="text" name="address-search" class="form-control">
+              <input id="address-search" type="text" name="address-search" class="form-control" 
+              placeholder="For example: 1600 Pennsylvania Ave. Washington, D.C.">
               </label>
              </div>
 
@@ -110,8 +111,8 @@
                   <li><a href="/users/{{ session['user_id'] }}">Profile</a></li>
                   <li><a href="/logout">Logout</a></li>
               {% else %}
-                  <li><a href="/register">Register</a></li>
-                  <li><a href="#" id="login">Login</a></li>
+                  <li><a href="/#" id="register">Register</a></li>
+                  <li><a href="/#" id="login">Login</a></li>
               {% endif %}
 
             </ul>

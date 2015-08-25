@@ -5,8 +5,8 @@
 $(document).ready(function() {
     $("#login-submit").click(function() {
         console.log("Make login form disappear!");
-        $.post("/login", {'email': $("#email").val(),
-                          'password':$ ("#password").val()}).done(function(result) {
+        $.post("/login", {'email': $("#login-email").val(),
+                          'password':$ ("#login-password").val()}).done(function(result) {
             console.log(result + "PASSWORD!");
             $("#session-login").html(result);
         });
@@ -23,13 +23,13 @@ $(document).ready(function() {
 
         <div>
             <label>Email:
-                <input type="email" name="email" required id="email">
+                <input type="email" name="email" required id="login-email">
             </label>
         </div>
 
         <div>
             <label>Password:
-                <input type="password" name="password" required id="password">
+                <input type="password" name="password" required id="login-password">
             </label>
         </div>
 

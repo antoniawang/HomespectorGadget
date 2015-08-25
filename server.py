@@ -75,8 +75,7 @@ def register_process():
         return redirect("/")
 
     else:
-        flash("This email has already been registered.\nPlease use a different email.") 
-        return redirect("/register")
+        return render_template("error-dialog.html", error_message = "This email is already Registered.\n Please login or register with a different email.")
 
 
 @app.route('/login', methods=['GET'])
@@ -105,6 +104,8 @@ def login_process():
         return redirect("/login")
 
     session["user_id"] = user.user_id
+    session['properties'] = []
+    session['comp_table'] = []
 
     flash("Hello, %s!" % user.fname)
 
@@ -353,6 +354,9 @@ def update_comp_table():
 ##############################################
 
 def get_session_lonlats():
+    """Helper function that creates a list of lon, lat tuples
+    for all the properties in the session."""
+
     lonlat_list = []
 
     props_in_list = session.get('properties',[])
@@ -374,6 +378,7 @@ def get_session_lonlats():
 
 
 def make_marker_text(lonlat_tuples_list):
+    """Parse and join the strings that go in the mapbox api call"""
 
     marker_text_list = []
     marker_label_list = list(string.ascii_lowercase)
@@ -390,8 +395,13 @@ def make_marker_text(lonlat_tuples_list):
 
 
 def get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth):
-    world_dim = { 'height': 256, 'width': 256 }; 
-    zoom_max = 13
+    """Figure out the optimal zoom level,
+    given the NE, SW bounds(max(lat, long); min(lat, lon)) 
+    from the list of lon, lat tuples."""
+
+    world_dim = { 'height': 256, 'width': 256 } #always 256 px
+    zoom_max = 13 #max zoom for Mapbox; 21 for Google maps
+
 
     def lat_radius(lat):
         sin = math.sin(lat * math.pi / 180);
@@ -447,7 +457,7 @@ def show_default_map():
     lat_max =  max([float(lat) for lon, lat in lonlat_tuples])
     lat_min =  min([float(lat) for lon, lat in lonlat_tuples])
 
-    zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth)
+    zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth) if len(lonlat_tuples) > 1 else 13
 
     lon_lat_zoom = str(lon_center) + ',' + str(lat_center) + ',' + str(zoom_level)
 
