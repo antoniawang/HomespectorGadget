@@ -60,11 +60,13 @@ def register_process():
 
     if user is None:
         # Get form variables
+        print "IF YOUSER IS NONE****************"
         fname = request.form["fname"]
         lname = request.form["lname"]
         email = request.form["email"]
         password = request.form["password"]
         zipcode = request.form["zipcode"]
+        print "IF YOUSER IS NONE****************2"
 
         new_user = User(fname=fname, lname=lname, email=email, password=password, zipcode=zipcode)
 
@@ -72,7 +74,7 @@ def register_process():
         db.session.commit()
 
         flash("User %s added." % email)
-        return redirect("/")
+        return ""
 
     else:
         return render_template("error-dialog.html", error_message = "This email is already Registered.\n Please login or register with a different email.")
@@ -157,6 +159,10 @@ def parse_address_search():
     citystatezip_string += ' ' + address_ordered_dict.get('ZipCode','')
     citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
 
+    address_for_walkscore = address_url_encode + "," + citystatezip_url_encode
+    print address_for_walkscore
+
+
     property_from_url, error_code = Property.generate_from_address(address=address_url_encode,
                         citystatezip=citystatezip_url_encode) 
 
@@ -173,8 +179,8 @@ def parse_address_search():
         if this_property is None:
             db.session.add(property_from_url)
             db.session.commit()
-        else:
-            this_property = property_from_url 
+    
+        this_property = property_from_url 
 
         return render_template("address-confirmation.html", house=this_property)
 
@@ -183,7 +189,7 @@ def parse_address_search():
 
     else:
         return render_template("error-dialog.html", error_message = "No property found. Please search again.")
-    
+
 
 # USE THIS TO CREATE THE MY PROFILE PAGE
 # @app.route("/users/<int:user_id>")
@@ -307,8 +313,6 @@ def delete_from_session():
 
 
     return "Victory"
-
-
 
 
 @app.route("/comparison-table", methods=['GET', 'POST'])
@@ -473,17 +477,7 @@ def show_default_map():
 
     return render_template("map.html", imgwidth=imgwidth, imgheight=imgheight, src=new_src)
 
-
-##############################################
-@app.route("/map", methods=['GET'])
-def show_map():
-    """Show the properties stored in session on a map
-    then allow to zoom in on properties to show pindrops
-    or heat maps"""
-
-
-    return render_template("map.html")
-
+#######################
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension

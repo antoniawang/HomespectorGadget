@@ -68,7 +68,8 @@ class Property(db.Model):
                  latitude=None, longitude=None, FIPScounty=None,
                  useCode=None, taxAssessmentYear=None, taxAssessment=None,
                  yearBuilt=None, lotSizeSqFt=None, finishedSqFt=None,
-                 totalRooms=None, lastSoldDate=None, lastSoldPrice=None):
+                 totalRooms=None, lastSoldDate=None, lastSoldPrice=None,
+                 walkscore=None):
         self.zpid = zpid
         self.homedetails = homedetails
         self.street = street
@@ -90,6 +91,7 @@ class Property(db.Model):
         self.totalRooms = totalRooms
         self.lastSoldDate = lastSoldDate
         self.lastSoldPrice = lastSoldPrice
+        self.walkscore = walkscore
 
     __tablename__ = "properties"
 
@@ -119,6 +121,10 @@ class Property(db.Model):
     lastSoldDate = db.Column(db.String(10))
     lastSoldPrice = db.Column(db.Integer)
     z_amount = db.Column(db.Integer)
+
+    #Walk and Transit Scores
+    walkscore = db.Column(db.Integer)
+    transitscore = db.Column(db.Integer)
 
     #MAY NOT NEED THESE ATTRIBUTES
     # z_last_updated = db.Column(db.DateTime)
@@ -208,7 +214,28 @@ class Property(db.Model):
                         z_amount=z_amount
                         #time_saved=datetime.utcnow()
                         )
+        new_property.get_walkscore()
         return new_property, Property.ERROR_OK
+
+    
+    def get_walkscore(self):
+        """gets the WalkScore and Transit Scores from url"""
+
+        self.walkscore = None
+        
+        Walkscore_key = os.environ["WALKSCORE_KEY"]
+        address = urllib.quote(self.street + " " + self.city + " " + self.state + " " + self.zipcode)
+        json_walkscore = "http://api.walkscore.com/score?format=json&address=%s&lat=%s&lon=%s&wsapikey=%s" % (address, self.latitude, self.longitude, Walkscore_key)
+        print "json_walkscore is", json_walkscore
+
+        response = urlopen(json_walkscore).read()
+
+        results_dict = json.loads(response)
+
+        if results_dict['status'] == 1:
+            self.walkscore=results_dict['walkscore']
+
+        return self.walkscore
 
     # MAY NOT NEED THIS
     @classmethod
