@@ -34,7 +34,9 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
-# mapbox_api_key = os.environ["MAPBOX_KEY"]
+mapbox_api_key = os.environ["MAPBOX_KEY"]
+foursq_clientid = os.environ["FOURSQ_CLIENTID"]
+foursq_clientsecret = os.environ["FOURSQ_CLIENTSECRET"]
 
 ##MAKE LIST OF POSSIBLE MARKER COLORS##
 def make_marker_colors():
@@ -519,20 +521,21 @@ def show_default_map():
 
     imgsize = str(imgwidth) + 'x' + str(imgheight)
 
-    mapbox_api_key = 'pk.eyJ1IjoiYW50b25pYXdhbmciLCJhIjoiNTc1OGJmMDZlNjQ4ZjlhMmRkZTU4ZGMwOTMxZDg2ODAifQ.nVRLoueu9vmdpYYDc_-zgg'
+    # mapbox_api_key = 'pk.eyJ1IjoiYW50b25pYXdhbmciLCJhIjoiNTc1OGJmMDZlNjQ4ZjlhMmRkZTU4ZGMwOTMxZDg2ODAifQ.nVRLoueu9vmdpYYDc_-zgg'
 
     new_src = 'https://api.mapbox.com/v4/mapbox.streets/' + marker_api_string + '/' + lon_lat_zoom + '/' + imgsize + '.png?access_token=' + mapbox_api_key
 
     return render_template("map.html", imgwidth=imgwidth, imgheight=imgheight, src=new_src)
 
 
-# @app.route("/detailed-map")
-# def generate_detailed_map():
-#     pass
-#     zpid = request.form.get('property') 
+@app.route("/detailed-map", methods=['POST'])
+def generate_detailed_map():
+    zpid = request.form.get('property')
+    this_property = Property.query.filter(Property.zpid == zpid).first()
 
 
-#     return render_template("detailed-map.html")
+
+    return render_template("detailed-map.html", house=this_property, MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
 
 
 

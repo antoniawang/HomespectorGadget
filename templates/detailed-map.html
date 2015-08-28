@@ -1,26 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset=utf-8 />
-<title>Places from Foursquare</title>
-<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+{% block content %}
 <script src='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
 <style>
   body { margin:0; padding:0; }
-  #map { position:absolute; top:0; bottom:0; width:100%; }
+  #detail-map {position:absolute; top:0; bottom:0; width:100%; }
 </style>
-</head>
-<body>
-
-
-<div id='map'></div>
+<div id='detail-map'></div>
 
 <!-- jQuery is required for this example. -->
 <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
 <script>
-L.mapbox.accessToken = {{ MapboxKey }};
-var map = L.mapbox.map('map', 'mapbox.emerald')
+
+
+var map = L.mapbox.map('detail-map', 'mapbox.emerald', { accessToken: "{{ MapboxKey }}" })
     .setView([{{ house.latitude }}, {{ house.longitude }}], 13);
 
 // Credit Foursquare for their wonderful data
@@ -33,18 +25,20 @@ map.attributionControl
 var CLIENT_ID = "{{ FourSqID }}";
 var CLIENT_SECRET = "{{ FourSqSecret }}";
 
+
 // https://developer.foursquare.com/start/search
 var API_ENDPOINT = 'https://api.foursquare.com/v2/venues/search' +
   '?client_id=CLIENT_ID' +
   '&client_secret=CLIENT_SECRET' +
   '&v=20130815' +
   '&ll=LATLON' +
-  '&query=coffee,tea' +
+  '&query=coffee' +
   '&callback=?';
 //Query will be a text input from user. They can add multiple categories with commas. Return an error message in query breaks
 
 // Keep our place markers organized in a nice group.
 var foursquarePlaces = L.layerGroup().addTo(map);
+console.log("Foursquare Places")
 
 // Use jQuery to make an AJAX request to Foursquare to load markers data.
 $.getJSON(API_ENDPOINT
@@ -52,13 +46,18 @@ $.getJSON(API_ENDPOINT
     .replace('CLIENT_SECRET', CLIENT_SECRET)
     .replace('LATLON', map.getCenter().lat +
         ',' + map.getCenter().lng), function(result, status) {
+    L.mapbox.accessToken = "{{ MapboxKey }}";
+    //EXPLAIN THIS
 
+    console.log(status)
     if (status !== 'success') return alert('Request to Foursquare failed');
-
+    console.log(result.response.venues.length)
     // Transform each venue result into a marker on the map.
     for (var i = 0; i < result.response.venues.length; i++) {
       var venue = result.response.venues[i];
+
       var latlng = L.latLng(venue.location.lat, venue.location.lng);
+      console.log(latlng)
       var marker = L.marker(latlng, {
           icon: L.mapbox.marker.icon({
             'marker-color': '#BE9A6B',
@@ -74,6 +73,4 @@ $.getJSON(API_ENDPOINT
 });
 </script>
 
-
-</body>
-</html>
+{% endblock %}
