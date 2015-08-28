@@ -1,8 +1,10 @@
 {% block content %}
 <script>
+
+    $(document).ready(function() {
+              
     // When any user clicks on a property's star
     // Add the record to connect user and property in the UserProperty table
-    $(document).ready(function() {
         $("span.glyphicon-star").click(function() { //highlight the star
             console.log(this);
           $(this).toggleClass("yellow");
@@ -20,7 +22,7 @@
     });
 
 
-    // //Switch to table view
+    // //Switch to map view
     // $(document).ready(function() {
     //     $("#map-view-select").click(function() {
     //         console.log("Make map appear!");
@@ -114,8 +116,8 @@
         });
     });
 
-
-
+//Change check to a color bar in map view. When property is on the map, have it be opaque (set alpha value in RGBA to 1),
+//If not in view, change transparency to 0.5 (RGBA)
 </script>
     <table class="table table-striped">
         <thead>
@@ -126,7 +128,14 @@
         <tbody>
         {% for house in properties %}
         <tr>
-            <td>{{ house.street }}            
+            {% set this_zpid = house.zpid %}
+            <style>
+            .z{{ this_zpid }}-color {
+                color: {{ used_color_map[this_zpid|string]['hex'] }} !important;
+                }
+            </style>
+
+            <td>{{ house.street }}   
              {% if "user_id" in session %}
                 <span class="glyphicon glyphicon-star
                 {% if house.zpid in liked %}
@@ -142,8 +151,9 @@
                 {% if house.zpid in props_in_table %}
                 green
                 {% endif %}
-                " id="{{ house.zpid }}" aria-hidden="true"></span>   
-
+                " id="{{ house.zpid }}" aria-hidden="true" display="inline"></span> 
+                <span class="glyphicon glyphicon-map-marker z{{ this_zpid }}-color"  id="{{ house.zpid }}" display="hidden">
+                </span>
                 <span class="glyphicon glyphicon-pushpin blue" id="{{ house.zpid }}" aria-hidden="true"></span>
 
          

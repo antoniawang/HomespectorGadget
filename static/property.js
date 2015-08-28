@@ -78,13 +78,18 @@ $(document).ready(function() {
 });
 
 
-//Switch to table view
+//Switch to map view
 $(document).ready(function() {
     $("#map-view-select").click(function() {
+
         console.log("Make map appear!");
         viewState = PageState.MAP;
         $.ajax("/default-map").done(function(result) {
             $("#contents").html(result);
+            $("span.glyphicon-check").css("display","none");
+            console.log(viewState);
+
+
         }); 
     });
 });
@@ -96,6 +101,7 @@ $(document).ready(function() {
         viewState = PageState.TABLE;
         $.ajax("/comparison-table").done(function(result) {
             $("#contents").html(result);
+            $("span.glyphicon-check").css("display","inline");
         }); 
     });
 });

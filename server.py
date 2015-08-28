@@ -21,6 +21,10 @@ import string
 
 import math
 
+import random
+
+import struct
+
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -31,6 +35,29 @@ app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 
 # mapbox_api_key = os.environ["MAPBOX_KEY"]
+
+##MAKE LIST OF POSSIBLE MARKER COLORS##
+def make_marker_colors():
+
+    rbg_range = range(50, 251, 50)
+    marker_rgb_list = [(r, g, b) for r in rbg_range for b in rbg_range for g in rbg_range]
+
+    random.shuffle(marker_rgb_list)
+
+    marker_hex_list = []
+
+    for rgb_tuple in marker_rgb_list:
+        hex_color_string = struct.pack('BBB', *rgb_tuple).encode('hex')
+        marker_hex_list.append(hex_color_string)
+
+    return marker_rgb_list, marker_hex_list    
+
+
+RGB_TUPLES, HEX_COLOR_STRINGS = make_marker_colors()
+
+###################################
+# General registration and login #
+###################################
 
 @app.route('/', methods=['GET','POST'])
 def index():
@@ -135,7 +162,17 @@ def logout():
     flash("Logged Out.")
     return redirect("/")
 
-###########################################################
+# USE THIS TO CREATE THE MY PROFILE PAGE
+# @app.route("/users/<int:user_id>")
+# def user_detail(user_id):
+#     """Show info about user."""
+
+#     user = User.query.get(user_id)
+#     return render_template("user.html", user=user)
+
+##########################################################
+# Searching, populating session, side column and table #
+##########################################################
 
 @app.route('/search', methods=['GET'])
 def parse_address_search():
@@ -191,19 +228,6 @@ def parse_address_search():
         return render_template("error-dialog.html", error_message = "No property found. Please search again.")
 
 
-# USE THIS TO CREATE THE MY PROFILE PAGE
-# @app.route("/users/<int:user_id>")
-# def user_detail(user_id):
-#     """Show info about user."""
-
-#     user = User.query.get(user_id)
-#     return render_template("user.html", user=user)
-
-@app.route("/table")
-def show_table_page():
-    """Load table.html """
-    return render_template("table.html")
-
 @app.route("/delete-property", methods=['POST'])
 def delete_property():
     """Delete the property from session and SQL
@@ -237,6 +261,7 @@ def get_propeties_list():
     # Our output cart will be a dictionary (so we can easily see if we
     # already have the property in there
     properties = []
+    used_color_map = session.get('used_color_map', {})
 
     # Loop over the ZPIDs in the session cart and add each one to
     # the output cart
@@ -245,9 +270,17 @@ def get_propeties_list():
         house_data = Property.query.get(zpid)
         if house_data is not None:
             properties.append(house_data)
+            if zpid not in used_color_map:
+                rgb_tuple = RGB_TUPLES.pop()
+                print rgb_tuple
+                r,g,b = rgb_tuple
+                hex_color_string = HEX_COLOR_STRINGS.pop()
+                color_map = {'r': r, 'g': g, 'b': b, 'hex': hex_color_string}
+                used_color_map[zpid] = color_map
         # else:
         #     pass # what can you do if it's not found?
 
+    session['used_color_map'] = used_color_map
     user_id = session.get('user_id')
     liked = None
 
@@ -257,7 +290,7 @@ def get_propeties_list():
 
     props_in_table = [int(x) for x in session.get('comp_table',[])]
 
-    return render_template("left-column.html", properties=properties, liked=liked, props_in_table=props_in_table)
+    return render_template("left-column.html", properties=properties, liked=liked, props_in_table=props_in_table, used_color_map=used_color_map)
 
 
 @app.route("/add-favorites", methods=['POST'])
@@ -296,8 +329,12 @@ def delete_from_session():
     when it's deleted from session.
     Done with Ajax to take out the property from the table"""
 
+    global RGB_TUPLES 
+    global HEX_COLOR_STRINGS
+
     #delete from session
     props_in_list = session.get('properties',[])
+    used_color_map = session.get('used_color_map',{})
 
     zpid = request.form.get('property') 
     print "zpid is: ", zpid, "and type: ", type(zpid), "$$$$$$$$$$"
@@ -305,11 +342,19 @@ def delete_from_session():
     if zpid in props_in_list:
         zpid_index = props_in_list.index(zpid)
         props_in_list.pop(zpid_index)
+        if zpid in used_color_map:
+            color_map = used_color_map[zpid]
+            rgb_tuple = (color_map['r'], color_map['g'], color_map['b'])
+            hex_color_string = color_map['hex']
+            RGB_TUPLES.append(rgb_tuple)
+            HEX_COLOR_STRINGS.append(hex_color_string)
+            del used_color_map[zpid]
 
     zpids_in_table = session.get('comp_table',[])
     if zpid in zpids_in_table:
         zpid_index2 = zpids_in_table.index(zpid)
-        zpids_in_table.pop(zpid_index2)
+        zpids_in_table.pop(zpid_index2) 
+
 
 
     return "Victory"
@@ -359,7 +404,9 @@ def update_comp_table():
     session['comp_table'] = zpids_in_table
     return str(result)
 
-##############################################
+#########
+# Maps #
+#########
 
 def get_session_lonlats():
     """Helper function that creates a list of lon, lat tuples
@@ -388,13 +435,14 @@ def get_session_lonlats():
 def make_marker_text(lonlat_tuples_list):
     """Parse and join the strings that go in the mapbox api call"""
 
+    used_color_list = []
+
     marker_text_list = []
-    marker_label_list = list(string.ascii_lowercase)
     color = '84638F'
     name = 'pin-m'
     
     for index, lonlat_tuple in enumerate(lonlat_tuples_list):
-        label = marker_label_list[index]
+        label = "building"
         lon, lat = lonlat_tuple
         marker_text = name + '-' + label + '+' + color + '(' + str(lon) + ',' + str(lat) + ')'
         marker_text_list.append(marker_text)
@@ -477,7 +525,19 @@ def show_default_map():
 
     return render_template("map.html", imgwidth=imgwidth, imgheight=imgheight, src=new_src)
 
-#######################
+
+# @app.route("/detailed-map")
+# def generate_detailed_map():
+#     pass
+#     zpid = request.form.get('property') 
+
+
+#     return render_template("detailed-map.html")
+
+
+
+
+################################
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension

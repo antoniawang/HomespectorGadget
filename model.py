@@ -92,6 +92,8 @@ class Property(db.Model):
         self.lastSoldDate = lastSoldDate
         self.lastSoldPrice = lastSoldPrice
         self.walkscore = walkscore
+        self.rgb_tuple = None
+        self.hex_color_string = None
 
     __tablename__ = "properties"
 
