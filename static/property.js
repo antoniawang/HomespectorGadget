@@ -1,10 +1,11 @@
 //VIEW STATE
 PageState = {
     TABLE : 0,
-    MAP: 1
+    MAP: 1,
+    INDEX: 2
 };
 
-var viewState = PageState.TABLE;
+var viewState = PageState.INDEX;
 
 
 //HOMEPAGE
@@ -87,6 +88,7 @@ $(document).ready(function() {
         $.ajax("/default-map").done(function(result) {
             $("#contents").html(result);
             $("span.glyphicon-check").css("display","none");
+            $("span.glyphicon-map-marker").css("display", "inline");
             console.log(viewState);
 
 
@@ -102,6 +104,7 @@ $(document).ready(function() {
         $.ajax("/comparison-table").done(function(result) {
             $("#contents").html(result);
             $("span.glyphicon-check").css("display","inline");
+            $("span.glyphicon-map-marker").css("display", "none");
         }); 
     });
 });

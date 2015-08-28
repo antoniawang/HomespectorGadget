@@ -1,4 +1,54 @@
-{% block content %}
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr><th>
+                <h4>Homespectable Properties</h4>
+            </th></tr>
+
+        </thead>        
+        <tbody>
+            <style>
+                {% for house in properties %}
+                 {% set this_zpid = house.zpid %}
+
+                .z{{ this_zpid }}-color {
+                color: #{{ used_color_map[this_zpid|string]['hex'] }} !important;
+                }
+                {% endfor %}
+            </style>
+        {% for house in properties %}
+        {% set this_zpid = house.zpid %}
+        <tr>
+           
+
+            <td>{{ house.street }}   
+             {% if "user_id" in session %}
+                <span class="glyphicon glyphicon-star
+                {% if house.zpid in liked %}
+                yellow
+                {% endif %}" id="{{ house.zpid }}" aria-hidden="true"></span> 
+
+                {% endif %} <br>
+
+                {{ house.city }}, {{ house.state }} {{ house.zipcode }}
+
+                <span class="glyphicon glyphicon-check
+                {% if house.zpid in props_in_table %}
+                green
+                {% endif %}
+                " id="{{ house.zpid }}" aria-hidden="true"></span> 
+                <span class="glyphicon glyphicon-map-marker z{{ this_zpid }}-color" id="{{ house.zpid }}" aria-hidden="true">
+                </span>
+                <span class="glyphicon glyphicon-pushpin blue" id="{{ house.zpid }}" aria-hidden="true"></span>
+
+         
+
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 <script>
 
     $(document).ready(function() {
@@ -130,48 +180,3 @@
 //Change check to a color bar in map view. When property is on the map, have it be opaque (set alpha value in RGBA to 1),
 //If not in view, change transparency to 0.5 (RGBA)
 </script>
-    <table class="table table-striped">
-        <thead>
-            <tr><th>
-                <h4>Homespectable Properties</h4>
-            </th></tr>
-        </thead>        
-        <tbody>
-        {% for house in properties %}
-        <tr>
-            {% set this_zpid = house.zpid %}
-            <style>
-            .z{{ this_zpid }}-color {
-                color: {{ used_color_map[this_zpid|string]['hex'] }} !important;
-                }
-            </style>
-
-            <td>{{ house.street }}   
-             {% if "user_id" in session %}
-                <span class="glyphicon glyphicon-star
-                {% if house.zpid in liked %}
-                yellow
-                {% endif %}
-                " id="{{ house.zpid }}" aria-hidden="true"></span> 
-
-                {% endif %} <br>
-
-                {{ house.city }}, {{ house.state }} {{ house.zipcode }}
-
-                <span class="glyphicon glyphicon-check
-                {% if house.zpid in props_in_table %}
-                green
-                {% endif %}
-                " id="{{ house.zpid }}" aria-hidden="true" display="inline"></span> 
-                <span class="glyphicon glyphicon-map-marker z{{ this_zpid }}-color" id="{{ house.zpid }}" display="hidden">
-                </span>
-                <span class="glyphicon glyphicon-pushpin blue" id="{{ house.zpid }}" aria-hidden="true"></span>
-
-         
-
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endblock %}
