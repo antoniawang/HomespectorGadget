@@ -423,7 +423,7 @@ def get_session_lonlats():
         longitude = this_house.longitude
         latitude = this_house.latitude
 
-        lonlat_list.append((longitude,latitude))
+        lonlat_list.append((zpid, longitude,latitude))
 
     return lonlat_list
 
@@ -436,16 +436,15 @@ def get_session_lonlats():
 
 def make_marker_text(lonlat_tuples_list):
     """Parse and join the strings that go in the mapbox api call"""
-
-    used_color_list = []
-
+    used_color_map = session.get('used_color_map', {})
     marker_text_list = []
-    color = '84638F'
+    # color = '84638F'
     name = 'pin-m'
     
     for index, lonlat_tuple in enumerate(lonlat_tuples_list):
         label = "building"
-        lon, lat = lonlat_tuple
+        zpid, lon, lat = lonlat_tuple
+        color = used_color_map[zpid]['hex']
         marker_text = name + '-' + label + '+' + color + '(' + str(lon) + ',' + str(lat) + ')'
         marker_text_list.append(marker_text)
 
@@ -454,11 +453,11 @@ def make_marker_text(lonlat_tuples_list):
 
 def get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth):
     """Figure out the optimal zoom level,
-    given the NE, SW bounds(max(lat, long); min(lat, lon)) 
+    given the NE, SW bounds(max(lat, lon); min(lat, lon)) 
     from the list of lon, lat tuples."""
 
     world_dim = { 'height': 256, 'width': 256 } #always 256 px
-    zoom_max = 13 #max zoom for Mapbox; 21 for Google maps
+    zoom_max = 13 #max zoom for Mapbox
 
 
     def lat_radius(lat):
@@ -506,14 +505,14 @@ def show_default_map():
     imgheight = 600
 
     #calculate map centers
-    lon_center = sum([float(lon) for lon, lat in lonlat_tuples])/len(lonlat_tuples)
-    lat_center = sum([float(lat) for lon, lat in lonlat_tuples])/len(lonlat_tuples)
+    lon_center = sum([float(lon) for zpid, lon, lat in lonlat_tuples])/len(lonlat_tuples)
+    lat_center = sum([float(lat) for zpid, lon, lat in lonlat_tuples])/len(lonlat_tuples)
 
     #calculate bounds with max and mins
-    lon_max =  max([float(lon) for lon, lat in lonlat_tuples])
-    lon_min =  min([float(lon) for lon, lat in lonlat_tuples])
-    lat_max =  max([float(lat) for lon, lat in lonlat_tuples])
-    lat_min =  min([float(lat) for lon, lat in lonlat_tuples])
+    lon_max =  max([float(lon) for zpid, lon, lat in lonlat_tuples])
+    lon_min =  min([float(lon) for zpid, lon, lat in lonlat_tuples])
+    lat_max =  max([float(lat) for zpid, lon, lat in lonlat_tuples])
+    lat_min =  min([float(lat) for zpid, lon, lat in lonlat_tuples])
 
     zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth) if len(lonlat_tuples) > 1 else 13
 
