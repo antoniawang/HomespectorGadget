@@ -25,7 +25,7 @@
 </style>
 <div>
   <form id="narrow-locations-form">
-    <input id="map-places-search" class="controls" type="text" placeholder="Search for places">
+    <input id="map-places-search" class="controls" type="text" placeholder="Search for places, e.g. 'coffee'">
     <input id="places-search-submit" type="submit">
   </form>
 </div>
@@ -94,6 +94,16 @@ $.getJSON(API_ENDPOINT
     if (status !== 'success') return alert('Request to Foursquare failed');
     console.log(result.response.venues.length)
     // Transform each venue result into a marker on the map.
+
+    var homeMarker = L.marker(map.getCenter(), {
+      icon: L.mapbox.marker.icon({
+            'marker-color': '#{{ color }}',
+            'marker-symbol': 'building',
+            'marker-size': 'large'
+          })
+    })
+    .addTo(foursquarePlaces);
+
     for (var i = 0; i < result.response.venues.length; i++) {
       var venue = result.response.venues[i];
 
@@ -101,9 +111,9 @@ $.getJSON(API_ENDPOINT
       console.log(latlng)
       var marker = L.marker(latlng, {
           icon: L.mapbox.marker.icon({
-            'marker-color': '#BE9A6B',
-            'marker-symbol': 'cafe',
-            'marker-size': 'large'
+            'marker-color': '#291400',
+            'marker-symbol': 'embassy',
+            'marker-size': 'small'
           })
         })
       .bindPopup('<strong><a href="https://foursquare.com/v/' + venue.id + '">' +

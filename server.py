@@ -532,9 +532,14 @@ def generate_detailed_map():
     print "Detailed map app route is running."
     zpid = request.form.get('property')
     query = request.form.get('query')
+    
+    map_color_dict = session.get('used_color_map',{})
+    color = map_color_dict[zpid]['hex']
+
+
     this_property = Property.query.filter(Property.zpid == zpid).first()
 
-    return render_template("detailed-map.html", house=this_property, query=query, MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
+    return render_template("detailed-map.html", house=this_property, color=color, query=query, MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
 
 
 
