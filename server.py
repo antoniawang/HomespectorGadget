@@ -232,7 +232,7 @@ def parse_address_search():
 
 @app.route("/delete-property", methods=['POST'])
 def delete_property():
-    """Delete the property from session and SQL
+    """Delete the property from session
     if wrong address was returned."""
 
     zpid = request.form['Delete-Property']
@@ -351,6 +351,7 @@ def delete_from_session():
             RGB_TUPLES.append(rgb_tuple)
             HEX_COLOR_STRINGS.append(hex_color_string)
             del used_color_map[zpid]
+            print "deleted from colormap", zpid, used_color_map
 
     zpids_in_table = session.get('comp_table',[])
     if zpid in zpids_in_table:
@@ -529,10 +530,9 @@ def show_default_map():
 
 @app.route("/detailed-map", methods=['POST'])
 def generate_detailed_map():
+    print "Detailed map app route is running."
     zpid = request.form.get('property')
     this_property = Property.query.filter(Property.zpid == zpid).first()
-
-
 
     return render_template("detailed-map.html", house=this_property, MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
 

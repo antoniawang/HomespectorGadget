@@ -2,9 +2,33 @@
 <script src='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
 <style>
-  body { margin:0; padding:0; }
-  #detail-map {position:absolute; top:0; bottom:0; width:100%; z-index:10;}
+  body { margin:0; padding:0px; }
+  #detail-map {position:absolute; height:100%; width:100%;}
+  #pac-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
+#pac-input:focus {
+  border-color: #4d90fe;
+}
+
+.pac-container {
+  font-family: Roboto;
+}
 </style>
+<div>
+  <form id="narrow-locations-form">
+    <input id="pac-input" class="controls" type="text" placeholder="Search for places">
+    <input type="submit">
+  </form>
+</div>
 <div id='detail-map'></div>
 
 <!-- jQuery is required for this example. -->
@@ -19,12 +43,17 @@ var map = L.mapbox.map('detail-map', 'mapbox.emerald', { accessToken: "{{ Mapbox
 map.attributionControl
     .addAttribution('<a href="https://foursquare.com/">Places data from Foursquare</a>');
 
+
+// Create the search box and link it to the UI element.
+var input = document.getElementById('pac-input');
+
+
 // Create a Foursquare developer account: https://developer.foursquare.com/
 // NOTE: CHANGE THESE VALUES TO YOUR OWN:
 // Otherwise they can be cycled or deactivated with zero notice.
 var CLIENT_ID = "{{ FourSqID }}";
 var CLIENT_SECRET = "{{ FourSqSecret }}";
-
+var QUERY = input
 
 // https://developer.foursquare.com/start/search
 var API_ENDPOINT = 'https://api.foursquare.com/v2/venues/search' +
@@ -32,7 +61,7 @@ var API_ENDPOINT = 'https://api.foursquare.com/v2/venues/search' +
   '&client_secret=CLIENT_SECRET' +
   '&v=20130815' +
   '&ll=LATLON' +
-  '&query=coffee' +
+  '&query=QUERY' +
   '&callback=?';
 //Query will be a text input from user. They can add multiple categories with commas. Return an error message in query breaks
 
@@ -44,6 +73,7 @@ console.log("Foursquare Places")
 $.getJSON(API_ENDPOINT
     .replace('CLIENT_ID', CLIENT_ID)
     .replace('CLIENT_SECRET', CLIENT_SECRET)
+    .replace('QUERY', QUERY)
     .replace('LATLON', map.getCenter().lat +
         ',' + map.getCenter().lng), function(result, status) {
     L.mapbox.accessToken = "{{ MapboxKey }}";

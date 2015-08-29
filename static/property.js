@@ -14,8 +14,8 @@ $(document).ready(function() {
         viewState = PageState.INDEX;
         $.ajax("/homepage").done(function(result) {
             $('#contents').html(result);
-            $("span.glyphicon-check").css("display","none");
-            $("span.glyphicon-map-marker").css("display", "none");
+            // $("span.glyphicon-check").css("display","none");
+            // $("span.glyphicon-map-marker").css("display", "none");
         });
     });
 });
