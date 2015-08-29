@@ -6,22 +6,24 @@
 //When property table loads, call ajax to update the lefthand column div
 //Use the property-list app route to populate with properties from session
 $(document).ready(function() {
+    var alreadyLoadedMap = false;
     $("#confirm-yes").click(function() {
         console.log("Make div disappear!");
         $("#address-confirm").css("display","none");
         $.ajax("/property-list").done(function(result) {
         	$("#left-col").html(result);
+          if (viewState == PageState.TABLE) {
+            $.ajax("/comparison-table").done( function(result) {
+              $("#contents").html(result);
+            });
+          } else {
+            $.ajax("/default-map").done( function(result) {
+              $("#contents").html(result);
+              });
+          }
     	});
-      if (viewState == PageState.TABLE) {
-    	   $.ajax("/comparison-table").done( function(result) {
-          	$("#contents").html(result);
-       });
-      } else {
-        $.ajax("/default-map").done( function(result) {
-            $("#contents").html(result);
-        });
-      }
     });
+  alreadyLoadedMap = false;
 });
 
 //Make the address confimation window disapear when user clicks "No"

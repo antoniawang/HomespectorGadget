@@ -100,7 +100,8 @@
             $.ajax("/detailed-map", {
                 method: "POST",
                 datatype: "json",
-                data: {'property':$(this).attr("id")}
+                data: {'property':$(this).attr("id"),
+                        'query': 'coffee'}
             }).done(function(result) {
                 $("#contents").html(result);
             });
@@ -149,7 +150,7 @@
 
                 {{ house.city }}, {{ house.state }} {{ house.zipcode }}
 
-                <span class="glyphicon glyphicon-pushpin blue" id="{{ house.zpid }}" aria-hidden="true" data-toggle="tooltip" title="Unpin from session"></span>
+                <span class="glyphicon glyphicon-pushpin blue" id="{{ house.zpid }}" aria-hidden="true" title="Unpin from session"></span>
                 <span class="glyphicon glyphicon-check
                 {% if house.zpid in props_in_table %}
                 green

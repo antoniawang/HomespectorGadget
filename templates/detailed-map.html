@@ -25,8 +25,8 @@
 </style>
 <div>
   <form id="narrow-locations-form">
-    <input id="pac-input" class="controls" type="text" placeholder="Search for places">
-    <input type="submit">
+    <input id="map-places-search" class="controls" type="text" placeholder="Search for places">
+    <input id="places-search-submit" type="submit">
   </form>
 </div>
 <div id='detail-map'></div>
@@ -37,7 +37,7 @@
 
 
 var map = L.mapbox.map('detail-map', 'mapbox.emerald', { accessToken: "{{ MapboxKey }}" })
-    .setView([{{ house.latitude }}, {{ house.longitude }}], 13);
+    .setView([{{ house.latitude }}, {{ house.longitude }}], 15);
 
 // Credit Foursquare for their wonderful data
 map.attributionControl
@@ -45,7 +45,18 @@ map.attributionControl
 
 
 // Create the search box and link it to the UI element.
-var input = document.getElementById('pac-input');
+$("#places-search-submit").click(function(event) {
+  event.preventDefault();
+  var input = $("#map-places-search").val()
+  $.ajax("/detailed-map", {
+                method: "POST",
+                datatype: "json",
+                data: {'property':{{ house.zpid }},
+                       'query': input}
+        }).done(function(result) {
+            $("#contents").html(result);
+    });
+});
 
 
 // Create a Foursquare developer account: https://developer.foursquare.com/
@@ -53,7 +64,7 @@ var input = document.getElementById('pac-input');
 // Otherwise they can be cycled or deactivated with zero notice.
 var CLIENT_ID = "{{ FourSqID }}";
 var CLIENT_SECRET = "{{ FourSqSecret }}";
-var QUERY = input
+var QUERY = '{{ query }}'
 
 // https://developer.foursquare.com/start/search
 var API_ENDPOINT = 'https://api.foursquare.com/v2/venues/search' +

@@ -279,10 +279,9 @@ def get_propeties_list():
                 hex_color_string = HEX_COLOR_STRINGS.pop()
                 color_map = {'r': r, 'g': g, 'b': b, 'hex': hex_color_string}
                 used_color_map[zpid] = color_map
-        # else:
-        #     pass # what can you do if it's not found?
 
-    session['used_color_map'] = used_color_map
+
+    # session['used_color_map'] = used_color_map
     user_id = session.get('user_id')
     liked = None
 
@@ -458,7 +457,7 @@ def get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth):
     from the list of lon, lat tuples."""
 
     world_dim = { 'height': 256, 'width': 256 } #always 256 px
-    zoom_max = 13 #max zoom for Mapbox
+    zoom_max = 21 #max zoom for Mapbox
 
 
     def lat_radius(lat):
@@ -515,7 +514,7 @@ def show_default_map():
     lat_max =  max([float(lat) for zpid, lon, lat in lonlat_tuples])
     lat_min =  min([float(lat) for zpid, lon, lat in lonlat_tuples])
 
-    zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth) if len(lonlat_tuples) > 1 else 13
+    zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth) if len(lonlat_tuples) > 1 else 21
 
     lon_lat_zoom = str(lon_center) + ',' + str(lat_center) + ',' + str(zoom_level)
 
@@ -532,9 +531,10 @@ def show_default_map():
 def generate_detailed_map():
     print "Detailed map app route is running."
     zpid = request.form.get('property')
+    query = request.form.get('query')
     this_property = Property.query.filter(Property.zpid == zpid).first()
 
-    return render_template("detailed-map.html", house=this_property, MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
+    return render_template("detailed-map.html", house=this_property, query=query, MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
 
 
 

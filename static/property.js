@@ -14,8 +14,6 @@ $(document).ready(function() {
         viewState = PageState.INDEX;
         $.ajax("/homepage").done(function(result) {
             $('#contents').html(result);
-            // $("span.glyphicon-check").css("display","none");
-            // $("span.glyphicon-map-marker").css("display", "none");
         });
     });
 });
@@ -76,8 +74,7 @@ $(document).ready(function() {
             $("#address-confirm").html(contents);
             console.log("Make div appear!");    // confirm in the console
             $("#address-confirm").css("display","block");
-           
-        });
+        });   
     });
 });
 
@@ -93,8 +90,6 @@ $(document).ready(function() {
             $("span.glyphicon-check").css("display","none");
             $("span.glyphicon-map-marker").css("display", "inline");
             console.log(viewState);
-
-
         }); 
     });
 });
