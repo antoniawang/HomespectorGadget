@@ -79,3 +79,19 @@ div#left-col {
 #contents {
 	margin-left: 20%;
 }
+
+.table-5-col td {
+	height: 4em;
+}
+
+.glyphicon-map-marker {
+	font-size: 1.75em;
+}
+
+.glyphicon-certificate {
+	font-size: 1em;
+}
+
+.glyphicon-home {
+	font-size: 0.85em;
+}

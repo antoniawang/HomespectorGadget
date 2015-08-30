@@ -89,6 +89,8 @@ $(document).ready(function() {
             $("#contents").html(result);
             $("span.glyphicon-check").css("display","none");
             $("span.glyphicon-map-marker").css("display", "inline");
+            $("span.glyphicon-certificate").css("display", "inline");
+            $("span.glyphicon-home").css("display", "inline");
             console.log(viewState);
         }); 
     });
@@ -103,6 +105,8 @@ $(document).ready(function() {
             $("#contents").html(result);
             $("span.glyphicon-check").css("display","inline");
             $("span.glyphicon-map-marker").css("display", "none");
+            $("span.glyphicon-certificate").css("display", "none");
+            $("span.glyphicon-home").css("display", "none");
         }); 
     });
 });
