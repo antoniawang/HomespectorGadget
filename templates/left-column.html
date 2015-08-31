@@ -83,6 +83,7 @@
                     console.log("Update table result was: " + result);
                     if (result != "1") {
                         console.log("Comparison table was NOT updated");
+                        alert("Please remove an item from table.")
                     } else {
                         console.log("Comparison table was updated");
                         $(that).toggleClass("green");

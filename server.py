@@ -552,7 +552,7 @@ def generate_detailed_map():
 
     this_property = Property.query.filter(Property.zpid == zpid).first()
 
-    return render_template("detailed-map.html", house=this_property, color=color, query=query, MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
+    return render_template("detailed-map.html", house=this_property, color=color, query=query, placeholder_text=query if query is not None else "Search for places, e.g. coffee", MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
 
 
 
