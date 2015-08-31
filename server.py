@@ -141,6 +141,17 @@ def login_process():
 
     session['properties'] = liked
     session['comp_table'] = []
+    session['used_color_map']={}
+
+    for zpid in liked:
+        if str(zpid) not in session['used_color_map']:
+            rgb_tuple = RGB_TUPLES.pop()
+            print "Prepopulating color map with", rgb_tuple
+            r,g,b = rgb_tuple
+            hex_color_string = HEX_COLOR_STRINGS.pop()
+            color_map = {'r': r, 'g': g, 'b': b, 'hex': hex_color_string}
+            session['used_color_map'][str(zpid)] = color_map
+
 
     flash("Hello, %s!" % user.fname)
 
@@ -272,16 +283,16 @@ def get_propeties_list():
         house_data = Property.query.get(zpid)
         if house_data is not None:
             properties.append(house_data)
-            if zpid not in used_color_map:
+            if str(zpid) not in used_color_map:
                 rgb_tuple = RGB_TUPLES.pop()
                 print rgb_tuple
                 r,g,b = rgb_tuple
                 hex_color_string = HEX_COLOR_STRINGS.pop()
                 color_map = {'r': r, 'g': g, 'b': b, 'hex': hex_color_string}
-                used_color_map[zpid] = color_map
+                used_color_map[str(zpid)] = color_map
 
 
-    # session['used_color_map'] = used_color_map
+    session['used_color_map'] = used_color_map
     user_id = session.get('user_id')
     liked = None
 
@@ -289,6 +300,7 @@ def get_propeties_list():
         results = db.session.query(UserProperty.zpid).filter_by(user_id=user_id).all()
         liked = [zpid for (zpid, ) in results]
 
+    print session.get('comp_table',[]),"$$$$$$$$$$$$$$$"
     props_in_table = [int(x) for x in session.get('comp_table',[])]
 
     return render_template("left-column.html", properties=properties, liked=liked, props_in_table=props_in_table, used_color_map=used_color_map)
@@ -343,13 +355,13 @@ def delete_from_session():
     if zpid in props_in_list:
         zpid_index = props_in_list.index(zpid)
         props_in_list.pop(zpid_index)
-        if zpid in used_color_map:
-            color_map = used_color_map[zpid]
+        if str(zpid) in used_color_map:
+            color_map = used_color_map[str(zpid)]
             rgb_tuple = (color_map['r'], color_map['g'], color_map['b'])
             hex_color_string = color_map['hex']
             RGB_TUPLES.append(rgb_tuple)
             HEX_COLOR_STRINGS.append(hex_color_string)
-            del used_color_map[zpid]
+            del used_color_map[str(zpid)]
             print "deleted from colormap", zpid, used_color_map
 
     zpids_in_table = session.get('comp_table',[])
@@ -444,7 +456,8 @@ def make_marker_text(lonlat_tuples_list):
     for index, lonlat_tuple in enumerate(lonlat_tuples_list):
         label = "building"
         zpid, lon, lat = lonlat_tuple
-        color = used_color_map[zpid]['hex']
+    
+        color = used_color_map[str(zpid)]['hex']
         marker_text = name + '-' + label + '+' + color + '(' + str(lon) + ',' + str(lat) + ')'
         marker_text_list.append(marker_text)
 
@@ -548,7 +561,7 @@ def generate_detailed_map():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
-    app.debug = False
+    app.debug = True
 
     connect_to_db(app)
 

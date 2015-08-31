@@ -1,4 +1,5 @@
 //VIEW STATE
+
 PageState = {
     TABLE : 0,
     MAP: 1,
@@ -7,6 +8,9 @@ PageState = {
 
 var viewState = PageState.INDEX;
 
+// $.ajaxSetup({
+//    headers: {'X-CSRF-Token': $('meta[name=csrf_token]').attr('content')}
+// });
 
 //HOMEPAGE
 $(document).ready(function() {
@@ -61,6 +65,7 @@ $(document).ready(function() {
 //Pass the text contents to the search app route
 //Make the modal appear
 $(document).ready(function() {
+
     $.ajax("/property-list").done(function(result) {
         $("#left-col").html(result);
     }); 
