@@ -192,8 +192,11 @@ def parse_address_search():
     """Parses the address for API call"""
     if request.args:
         raw_address_text = request.args.get("address-search")
+        print "raw_address_text", raw_address_text, "$$$$$$$$$$$$$$$"
     raw_address_parsed = usaddress.tag(raw_address_text)
+    print "raw_address_parsed", raw_address_parsed, "$$$$$$$$$$$$$$$"
     address_ordered_dict = raw_address_parsed[0]
+    print "address_ordered_dict", address_ordered_dict, "$$$$$$$$$$$$$$$"
     
     address_keys = ['AddressNumber','StreetName','StreetNamePostType','OccupancyType','OccupancyIdentifier']
     address_string_list=[]
@@ -201,8 +204,9 @@ def parse_address_search():
         if address_ordered_dict.get(key) is not None:
             address_string_list.append(address_ordered_dict[key])
     address_string = ' '.join(address_string_list)
+    print "address_string", address_string, "$$$$$$$$$$$$$$$"
     address_url_encode = address_string.replace(' ','+').strip()
-
+    print "address url encode is", address_url_encode, "$$$$$$$$$$$$$$$"
     
     citystatezip_string = address_ordered_dict.get('PlaceName','')
     citystatezip_string += '%2C ' + address_ordered_dict.get('StateName','')
@@ -561,7 +565,7 @@ def generate_detailed_map():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
-    app.debug = False
+    app.debug = True
 
     connect_to_db(app)
 

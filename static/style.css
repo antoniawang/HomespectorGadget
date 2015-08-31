@@ -14,6 +14,14 @@
 	color: green;
 }
 
+#sf-homes {
+	width: 80%;
+	height: auto;
+	opacity: 0.4;
+	z-index: -1; 
+	position: absolute;
+}
+
 div#left-col {
 	z-index: 100;
 	background-color: white;
@@ -24,6 +32,7 @@ div#left-col {
     height: 100%;
     top-margin: 10%;
 }
+
 
 .top-right-nav {
 /*	position: fixed;
@@ -46,11 +55,11 @@ div#left-col {
 }
 
 .modal-confirm {
-	height: 35%;
+	height: auto;
 }
 
 .modal-login {
-	height: 50%;
+	height: auto;
 }
 
 
@@ -78,6 +87,8 @@ div#left-col {
 
 #contents {
 	margin-left: 20%;
+	height: 100%;
+	width: 100%;
 }
 
 .table-5-col td {
