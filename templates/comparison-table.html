@@ -44,12 +44,14 @@
                 <tr><td>{{ house.zipcode }}</td></tr>
                 <tr><td>{{ house.bedrooms }}</td></tr>
                 <tr><td>{{ house.bathrooms }}</td></tr>
-                <tr><td>{{ house.lotSizeSqFt }}</td></tr>
-                <tr><td>{{ house.finishedSqFt }}</td></tr>
-                <tr><td>{{ house.z_amount }}</td></tr>
+                <tr><td>{{ "{:,.0f}".format(house.lotSizeSqFt|int) }}</td></tr>
+                <tr><td>{{ "{:,.0f}".format(house.finishedSqFt|int) }}</td></tr>
+                <tr><td>{{ "${:,.0f}".format(house.z_amount|int) }}</td></tr>
                 <tr><td>{{ house.yearBuilt }}</td></tr>
                 <tr><td>{{ house.lastSoldDate }}</td></tr>
-                <tr><td>${{ house.lastSoldPrice }}</td></tr>
+                <tr><td>{% if house.lastSoldPrice %}
+                    {{ "${:,.0f}".format(house.lastSoldPrice|int) }}
+                    {% endif %}</td></tr>
                 <tr><td>{{ house.useCode }}</td></tr>
                 <tr><td>{{ house.latitude }}</td></tr>
                 <tr><td>{{ house.longitude }}</td></tr>
