@@ -40,7 +40,8 @@ $(document).ready(function() {
             }); 
         });
     });
-});    
+}); 
+
 
 //REGISTER
 //Makde register modal appear
