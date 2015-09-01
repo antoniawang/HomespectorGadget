@@ -22,7 +22,7 @@
 
 div#left-col {
 	z-index: 100;
-	background-color: black;
+	background-color: white;
 	color: blue;
 	position: fixed;
     left: 0;
@@ -59,7 +59,6 @@ div#left-col {
 .modal-login {
 	height: auto;
 }
-
 
 .comp-table{
 	display: table;
