@@ -518,8 +518,8 @@ def show_default_map():
 
     marker_api_string = ",".join(marker_string_list)
 
-    imgwidth = 800
-    imgheight = 600
+    imgwidth = 1024
+    imgheight = 1024
 
     #calculate map centers
     lon_center = sum([float(lon) for zpid, lon, lat in lonlat_tuples])/len(lonlat_tuples)

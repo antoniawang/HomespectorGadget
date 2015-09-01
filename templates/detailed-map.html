@@ -32,6 +32,11 @@
   bottom:0; 
   width:100%; }
 
+#places-page {
+  position: relative;
+  height: 640px;
+}
+
 /*  #detail-map {position:absolute; height:100%; width:100%;}*/
 /*  #pac-input {
   background-color: #fff;
@@ -58,12 +63,19 @@
 </style>
 
 <!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box" autocomplete="off" style="z-index: 0; position: absolute; left: 88px; top: 0px;"> -->
-<div id="detail-map">
-  <form id="narrow-locations-form">
+<div id="places-page">
+  <div id="detail-map"></div>
+  <div id="narrow-locations-form">
+  <form>
     <input id="map-places-search" class="controls" type="text" placeholder="{{ placeholder_text }}" />
     <input id="places-search-submit" type="submit" style="display:hidden"/>
   </form>
 </div>
+
+</div>
+
+ 
+
 <!-- jQuery is required for this example. -->
 <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
 <script>

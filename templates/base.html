@@ -41,13 +41,24 @@
       #address-search {
         width: 500px;
       }
+      .navbar {
+        margin-left: 20%;
+      }
+      .form-group {
+        position: absolute;
+      }
+
+      body {
+        background-color: white;
+      }
+
     </style> 
 </head>
 <body>
 
 <div id="left-col">
 </div>
-<nav class="navbar navbar-inverse top-right-nav" style="margin-bottom: 0px">
+<nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -67,18 +78,17 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse"
              id="bs-example-navbar-collapse-1">
-
         <form>
             <div class="form-group">
               <label> 
               <input id="address-search" type="text" name="address-search" class="form-inline" 
-              placeholder="1600 Pennsylvania Ave. Washington, D.C.">
+              placeholder="Search an address. For example: 1600 Pennsylvania Ave. Washington, D.C.">
               </label>
               <input id="search-btn" value="Search" class="btn btn-primary"> 
             </div>
         </form>         
-
-            <ul class="nav navbar-nav navbar-right" id="session-login">
+        <div class="collapse navbar-collapse navbar-right">  
+                   <ul class="nav navbar-nav navbar-right" id="session-login">
                   <li><a href="/#" id="table-view-select">Table View</a></li>
                   <li><a href="/#" id="map-view-select">Map View</a></li>
               {% if "user_id" in session %}
@@ -88,11 +98,12 @@
                   <li><a href="/#" id="login">Login</a></li>
               {% endif %}
 
-            </ul>
+            </ul>    
         </div>
         <!-- /.navbar-collapse -->
     </div>
     <!-- /.container-fluid -->
+  </div> 
 </nav>
     <div id="login-form" class="modal modal-login" style="width:50%;">
     </div>
@@ -107,7 +118,7 @@
 
 <div id="contents">
   <img id="sf-homes" src="static/sfhomes.jpg">
-  <span class="glyphicon glyphichon-search" style="z-index:1; font-size:500%"/>
+  <span class="glyphicon glyphichon-search" style="z-index:1; font-size:500px; position:absolute"/>
 <!--   <p id="welcome-text">  Welcome to Homespector Gadget. Begin by searching for an street address with city+state or zip code. For example:<br>
   1600 Pennsylvania Ave. Washington, D.C.
   </p> -->
