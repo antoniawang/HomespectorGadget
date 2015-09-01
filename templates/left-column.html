@@ -12,6 +12,7 @@
         $("span.glyphicon-star").click(function() { //highlight the star
             console.log(this);
             $(this).toggleClass("yellow");
+            $(this).toggleClass("white");
 
     // Send the new property to the database
         $.ajax("/add-favorites", {
@@ -152,6 +153,8 @@
                 <span class="glyphicon glyphicon-star
                 {% if house.zpid in liked %}
                 yellow
+                {% else %}
+                white
                 {% endif %}" id="{{ house.zpid }}" aria-hidden="true" 
                 title="{% if house.zpid in liked %}
                 Saved

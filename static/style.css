@@ -1,5 +1,5 @@
 .blue {
-	color: blue;
+	color: #10222B;
 }
 
 .white {
@@ -7,7 +7,7 @@
 }
 
 .yellow {
-	color: yellow;
+	color: #FFCC00;
 }
 
 .green {
@@ -22,7 +22,7 @@
 
 div#left-col {
 	z-index: 100;
-	background-color: white;
+	background-color: #E2f0D6;
 	color: black;
 	position: fixed;
     left: 0;
@@ -40,6 +40,8 @@ div#left-col {
 	right: 0;
 	width: 80%;*/
 	margin-left: 20%;
+	background-color: #E2f0D6;
+
 }
 
 .modal {
@@ -52,16 +54,20 @@ div#left-col {
 	margin-right: auto;
 	margin-bottom: auto;
 	margin-top: auto;
-	background-color: #3C3C3C;
+	background-color: #E2f0D6;
+	position: relative;
+    overflow-y: auto;
+    max-height: 100%;
+    padding: 15px;
 }
 
-.modal-confirm {
+/*.modal-confirm {
 	height: auto;
 }
 
 .modal-login {
 	height: auto;
-}
+}*/
 
 .comp-table{
 	display: table;
@@ -85,15 +91,28 @@ div#left-col {
 	min-width: 20%;
 }
 
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #E2f0D6;
+}
+
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+   background-color: #F6FFE0;
+}
+
 #contents {
 	margin-left: 20%;
 	height: 100%;
 	width: 80%;
+	background-color: white;
 }
 
 .table-5-col td {
 	height: 4em;
 }
+/*
+.glyphicon {
+	color:white;
+}*/
 
 .glyphicon-map-marker {
 	font-size: 1.75em;

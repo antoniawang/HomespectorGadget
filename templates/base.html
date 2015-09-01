@@ -20,6 +20,7 @@
     rel="stylesheet"> -->
     <link href="static/bootstrap/css/bootstrap.min.css"
     rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style2.css">
     <link href='https://fonts.googleapis.com/css?family=Walter+Turncoat' rel='stylesheet' type='text/css'>
     <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS" />
     <script src='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
@@ -46,16 +47,21 @@
       .navbar {
         margin-left: 20%;
       }
-      .form-group {
+      #top-nav .form-group{
         position: absolute;
       }
 
-      body {
-        background-color: white;
+      html body {
+        background-color: #F6FFE0;
       }
       #address-search {
         margin: 15px;
         width: 500px;
+      }
+
+      .spaced {
+        margin-left:20px; 
+        margin-top: 20px;
       }
 
     </style> 
@@ -64,7 +70,7 @@
 
 <div id="left-col">
 </div>
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default top-right-nav" style="margin-bottom: 0px" id="top-nav">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -111,10 +117,10 @@
     <!-- /.container-fluid -->
   </div> 
 </nav>
-    <div id="login-form" class="modal modal-login" style="width:50%;">
+    <div id="login-form" class="modal modal-login">
     </div>
 
-    <div id="address-confirm" class="modal modal-confirm" style="width:50%;">
+    <div id="address-confirm" class="modal modal-confirm">
     </div>
 
 
