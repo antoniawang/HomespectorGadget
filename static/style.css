@@ -23,7 +23,7 @@
 div#left-col {
 	z-index: 100;
 	background-color: white;
-	color: blue;
+	color: black;
 	position: fixed;
     left: 0;
     width: 20%;
