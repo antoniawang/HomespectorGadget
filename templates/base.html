@@ -26,7 +26,6 @@
     <script src='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
     <link href='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
     <style>
-      h1, h2, h3, .navbar-brand { font-family: "Frijole"; }
 
       #homepage-title {
             margin: 0;
@@ -51,9 +50,6 @@
         position: absolute;
       }
 
-      html body {
-        background-color: #F6FFE0;
-      }
       #address-search {
         margin: 15px;
         width: 500px;
@@ -94,13 +90,13 @@
             <div class="form-group">
               <label> 
               <input id="address-search" type="text" name="address-search" class="form-inline" 
-              placeholder="Search an address. For example: 1600 Pennsylvania Ave. Washington, D.C.">
+              placeholder="1600 Pennsylvania Ave. Washington, D.C.">
               </label>
               <input id="search-btn" value="Search" class="btn btn-primary"> 
             </div>
         </form>         
         <div class="collapse navbar-collapse navbar-right">  
-                   <ul class="nav navbar-nav navbar-right" id="session-login">
+                  <ul class="nav navbar-nav navbar-right" id="session-login">
                   <li><a href="/#" id="table-view-select">Table View</a></li>
                   <li><a href="/#" id="map-view-select">Map View</a></li>
               {% if "user_id" in session %}

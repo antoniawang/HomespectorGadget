@@ -1,24 +1,3 @@
-.blue {
-	color: #10222B;
-}
-
-.white {
-	color: white;
-}
-
-.yellow {
-	color: #FFCC00;
-}
-
-.green {
-	color: green;
-}
-
-#sf-homes {
-	width: 80%;
-	height: auto;
-	position: absolute;
-}
 
 div#left-col {
 	z-index: 100;
@@ -29,10 +8,6 @@ div#left-col {
     width: 20%;
     height: 100%;
     top-margin: 10%;
-}
-
-.walter-turncoat {
-	font-family: 'Walter Turncoat', cursive;
 }
 
 .top-right-nav {
@@ -46,7 +21,7 @@ div#left-col {
 
 .modal {
 	display: none;
-	border: 1px solid black;
+	border: 1px solid #ddd;
 	border-radius: 3px;
 	width: 50%;
 	height: auto;
@@ -86,17 +61,9 @@ div#left-col {
 	display: table-cell;
 	text-align: left;
 	vertical-align: top;
-	border: 2px solid black;
+	border: 2px solid #ddd;
 	width: 2000px;
 	min-width: 20%;
-}
-
-.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
-   background-color: #E2f0D6;
-}
-
-.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
-   background-color: #F6FFE0;
 }
 
 #contents {

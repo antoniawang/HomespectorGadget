@@ -1,3 +1,79 @@
+.blue {
+	color: #10222B;
+}
+
+.white {
+	color: white;
+}
+
+.yellow {
+	color: #FFCC00;
+}
+
+.green {
+	color: #95AB63;
+}
+
+#sf-homes {
+	width: 80%;
+	height: auto;
+	position: absolute;
+}
+
 .container-fluid {
 	background-color: #E2F0D6;
+}
+
+nav {
+	border: none;
+	border-radius: 0;
+}
+
+h1, h2, h3, .navbar-brand { 
+	font-family: 'Walter Turncoat', cursive;
+}
+
+#left-col-head {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.table-striped {
+	background-color: #F6FFE0;
+}
+
+/*for left column*/
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #E2f0D6;
+}
+
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+   background-color: #F6FFE0;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: rgba(189,214,132,0.5);
+}
+
+/*for comp table*/
+.table-5-col > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #F6FFE0;
+}
+
+.table-5-col > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+   background-color: #E2f0D6;
+}
+
+thead th {
+	background-color: #E2f0D6;
+	border: none;
+	border-radius: 0;
+}
+/*
+#search-btn {
+	background-color: #10222B;
+}*/
+
+body {
+background-color: #F6FFE0;
 }
