@@ -23,26 +23,16 @@ div#left-col {
 	display: none;
 	border: 1px solid #ddd;
 	border-radius: 3px;
-	width: 50%;
-	height: auto;
 	margin-left: auto;
 	margin-right: auto;
 	margin-bottom: auto;
 	margin-top: auto;
-	background-color: #E2f0D6;
+	background-color: #E2F0D6;
 	position: relative;
     overflow-y: auto;
     max-height: 100%;
     padding: 15px;
 }
-
-/*.modal-confirm {
-	height: auto;
-}
-
-.modal-login {
-	height: auto;
-}*/
 
 .comp-table{
 	display: table;

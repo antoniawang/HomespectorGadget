@@ -21,7 +21,7 @@
 }
 
 .container-fluid {
-	background-color: #E2F0D6;
+	background-color: #10222B;
 }
 
 nav {
@@ -29,13 +29,13 @@ nav {
 	border-radius: 0;
 }
 
-h1, h2, h3, .navbar-brand { 
+h1, h2, h3, h4, .navbar-brand { 
 	font-family: 'Walter Turncoat', cursive;
 }
 
 #left-col-head {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 .table-striped {
@@ -58,22 +58,60 @@ h1, h2, h3, .navbar-brand {
 /*for comp table*/
 .table-5-col > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
    background-color: #F6FFE0;
+   vertical-align: middle;
 }
 
 .table-5-col > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
    background-color: #E2f0D6;
+   vertical-align: middle;
 }
 
 thead th {
-	background-color: #E2f0D6;
+	background-color: #10222B;
 	border: none;
 	border-radius: 0;
+	color: white;
 }
-/*
+
 #search-btn {
-	background-color: #10222B;
-}*/
+      width: 75px;
+      padding: 2px;
+}
 
 body {
 background-color: #F6FFE0;
+}
+
+#address-search {
+margin: 15px;
+width: 500px;
+}
+
+.modal-confirm {
+	height: 40%;
+	width: 50%;
+}
+
+.modal-login {
+	width: 30%;
+	height: 50%;
+	max-height: 575px;
+}
+
+#address-confirm {
+	background-color: #BDD684;
+}
+
+
+div.transbox {
+    margin: 30px;
+    background-color: #ffffff;
+    border: 1px solid black;
+    opacity: 0.6;
+}
+
+div.transbox p {
+    margin: 5%;
+    font-weight: bold;
+    color: #000000;
 }

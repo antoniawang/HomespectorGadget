@@ -60,10 +60,10 @@
 
         $("span.glyphicon-check").click(function() {    //highlight the star
             console.log(this);
-            var isGreen = $(this).hasClass("green");
+            var isBlue = $(this).hasClass("blue");
             var updateData = null;
             var that=this;
-            if (!isGreen) {
+            if (!isBlue) {
                 console.log("Add to comparison")
                 updateData = {'zpid':$(this).attr("id"),
                             'is_in_table': false};
@@ -87,7 +87,8 @@
                         alert("Please remove an item from table.")
                     } else {
                         console.log("Comparison table was updated");
-                        $(that).toggleClass("green");
+                        $(that).toggleClass("blue");
+                        $(that).toggleClass("white");
                         $.ajax("/comparison-table").done( function(result) {
                             console.log("Got new HTML for the comparison table: " + result);
                             $("#contents").html(result);
@@ -169,7 +170,9 @@
                 <span class="glyphicon glyphicon-pushpin blue" id="{{ house.zpid }}" aria-hidden="true" title="Unpin from session"></span>
                 <span class="glyphicon glyphicon-check
                 {% if house.zpid in props_in_table %}
-                green
+                blue
+                {% else %}
+                white
                 {% endif %}
                 " id="{{ house.zpid }}" aria-hidden="true" 
                 title="

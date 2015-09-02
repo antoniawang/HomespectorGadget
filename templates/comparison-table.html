@@ -4,27 +4,28 @@
         <div class="comp-col" id="specs-col">
             <table class="table table-striped table-5-col"><thead>
                 <tr><th>
-                Specs
+                    <b>SPECS</b>
                 </th></tr>
             </thead>        
             <tbody>
-                <tr><td>Listing</td></tr>
-                <tr><td>Street</td></tr>
-                <tr><td>City</td></tr>
-                <tr><td>State</td></tr>
-                <tr><td>Zip Code</td></tr>
-                <tr><td>Bedrooms</td></tr>
-                <tr><td>Bathrooms</td></tr>
-                <tr><td>Lot Size (Sq.Ft.)</td></tr>
-                <tr><td>Finished Area (Sq.Ft.)</td></tr>
-                <tr><td>Zestimate</td></tr>
-                <tr><td>Year Built</td></tr>
-                <tr><td>Last Sold Date</td></tr>
-                <tr><td>Last Sold Price</td></tr>
-                <tr><td>Use Code</td></tr>
-                <tr><td>Latitude</td></tr>
-                <tr><td>Longitude</td></tr>
-                <tr><td><img src="https://cdn.walk.sc/images/api-logo.png"></td></tr>
+                <tr><td><b>Listing Site</b></td></tr>
+                <tr><td><b>Street</b></td></tr>
+                <tr><td><b>City</b></td></tr>
+                <tr><td><b>State</b></td></tr>
+                <tr><td><b>Zip Code</b></td></tr>
+                <tr><td><b>Bedrooms</b></td></tr>
+                <tr><td><b>Bathrooms</b></td></tr>
+                <tr><td><b>Lot Size (Sq.Ft.)</b></td></tr>
+                <tr><td><b>Finished Area (Sq.Ft.)</b></td></tr>
+                <tr><td><img src="https://cdn.walk.sc/images/api-logo.png"></td></tr> 
+                <tr><td><b>Zestimate</b></td></tr>
+                <tr><td><b>Year Built</b></td></tr>
+                <tr><td><b>Last Sold Date</b></td></tr>
+                <tr><td><b>Last Sold Price</b></td></tr>
+                <tr><td><b>Use Code</b></td></tr>
+                <tr><td><b>Latitude</b></td></tr>
+                <tr><td><b>Longitude</b></td></tr>
+                <tr><td></td></tr>
             </tbody></table>
         </div>
 
@@ -32,11 +33,11 @@
         <div class="comp-col" id="prop{{ loop.index }}-col">
             <table class="table table-5-col"><thead>
                 <tr><th>
-                Property {{ loop.index }}
+                    <b>PROPERTY {{ loop.index }}</b>
                 </th></tr>
             </thead>        
             <tbody>        
-                <tr><td><a target="_blank" href='{{ house.homedetails }}'>Listing site</a></td></tr>
+                <tr><td id="listing-link"><a target="_blank" href='{{ house.homedetails }}'>Go to Zillow listing page</a></td></tr>
                 <tr><td>{{ house.street }}</td></tr>
                 <tr><td>{{ house.city }}</td></tr>
                 <tr><td>{{ house.state }}</td></tr>
@@ -45,6 +46,7 @@
                 <tr><td>{{ house.bathrooms }}</td></tr>
                 <tr><td>{{ "{:,.0f}".format(house.lotSizeSqFt|int) }}</td></tr>
                 <tr><td>{{ "{:,.0f}".format(house.finishedSqFt|int) }}</td></tr>
+                <tr><td>{{ house.walkscore }}</td></tr>
                 <tr><td>{{ "${:,.0f}".format(house.z_amount|int) }}</td></tr>
                 <tr><td>{{ house.yearBuilt }}</td></tr>
                 <tr><td>{{ house.lastSoldDate }}</td></tr>
@@ -54,7 +56,7 @@
                 <tr><td>{{ house.useCode }}</td></tr>
                 <tr><td>{{ house.latitude }}</td></tr>
                 <tr><td>{{ house.longitude }}</td></tr>
-                <tr><td>{{ house.walkscore }}</td></tr>
+                <tr><td></td></tr>
             </tbody></table>
         </div>             
         {% endfor %}

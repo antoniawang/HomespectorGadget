@@ -40,7 +40,8 @@ $(document).ready(function() {
 
 <div class="top-right-nav" style="width:50%;">
   <h4>Address Confirmation</h4>
-  Is this your address?
+  <i>Is this your address?</i>
+  <br>
   {{ house.street }} <br>
   {{ house.city }}, {{ house.state }} {{ house.zipcode }}
 <br>
@@ -48,6 +49,7 @@ $(document).ready(function() {
 <a href="#" id="confirm-yes" class="btn btn-large btn-primary">Yes! Add to Comparison List.</a>
 <form>
 	<input type="hidden" id="hidden-input" name="Delete-Property" value="{{ house.zpid }}">
+  <br>
 	<input type="submit" id="confirm-no" class="btn btn-large btn-primary" value="No! Search again.">
 </form>	 
 </div>
