@@ -1,4 +1,6 @@
 
+/*positioning the nav bar, left column, contents and modal divs*/
+
 div#left-col {
 	z-index: 100;
 	background-color: #E2f0D6;
@@ -11,12 +13,16 @@ div#left-col {
 }
 
 .top-right-nav {
-/*	position: fixed;
-	right: 0;
-	width: 80%;*/
 	margin-left: 20%;
 	background-color: #E2f0D6;
 
+}
+
+#contents {
+	margin-left: 20%;
+	height: 100%;
+	width: 80%;
+	background-color: white;
 }
 
 .modal {
@@ -28,18 +34,79 @@ div#left-col {
 	margin-bottom: auto;
 	margin-top: auto;
 	background-color: #E2F0D6;
-	position: relative;
+	position: absolute;
     overflow-y: auto;
     max-height: 100%;
     padding: 15px;
 }
 
+#address-search {
+margin: 15px;
+width: 500px;
+}
+
+.modal-confirm {
+	height: 60%;
+	width: 50%;
+}
+
+.modal-login {
+	width: 30%;
+	height: 50%;
+	max-height: 575px;
+}
+
+#address-confirm {
+	background-color: #BDD684;
+}
+
+
+/*general background and striped table colors including hover colors*/
+body {
+background-color: #F6FFE0;
+}
+
+.table-striped {
+	background-color: #F6FFE0;
+}
+
+
+/*for left column*/
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #E2f0D6;
+}
+
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+   background-color: #F6FFE0;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: rgba(189,214,132,0.5);
+}
+
+/*for comp table*/
+.table-5-col > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #F6FFE0;
+   vertical-align: middle;
+}
+
+.table-5-col > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+   background-color: #E2f0D6;
+   vertical-align: middle;
+}
+
+thead th {
+	background-color: #10222B;
+	border: none;
+	border-radius: 0;
+	color: white;
+}
+
+/*Comparison Table*/
 .comp-table{
 	display: table;
 	border-collapse: collapse;
-/*	margin-left: 20%;*/
 	margin-top: 0;
-/*	width: 80%;*/
 	z-index: 10000;
 }
 
@@ -56,20 +123,32 @@ div#left-col {
 	min-width: 20%;
 }
 
-#contents {
-	margin-left: 20%;
-	height: 100%;
-	width: 80%;
-	background-color: white;
-}
-
 .table-5-col td {
 	height: 4em;
 }
-/*
-.glyphicon {
-	color:white;
-}*/
+
+/*Left Column*/
+#left-col-head {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+/*Formatting the colors and positions of the glyicons on the left column*/
+.blue {
+	color: #10222B;
+}
+
+.white {
+	color: white;
+}
+
+.yellow {
+	color: #FFCC00;
+}
+
+.green {
+	color: #95AB63;
+}
 
 .glyphicon-map-marker {
 	font-size: 1.75em;
@@ -81,4 +160,56 @@ div#left-col {
 
 .glyphicon-home {
 	font-size: 0.85em;
+}
+
+
+/*Nav Bar*/
+.container-fluid {
+	background-color: #10222B;
+}
+
+nav {
+	border: none;
+	border-radius: 0;
+}
+
+#search-btn {
+      width: 75px;
+      padding: 2px;
+}
+
+/* specialty font*/
+h2, h3, .navbar-brand { 
+	font-family: 'Walter Turncoat', cursive;
+}
+
+
+/*index page*/
+#sf-homes {
+	width: 80%;
+	height: auto;
+	position: absolute;
+}
+
+div.image {
+	width: 80%;
+	height: auto;
+	position: absolute;
+}
+
+div.transbox {
+    margin: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    position: absolute;
+    margin-left: 10%;
+    margin-top: 20%;
+    padding:15px;
+    text-align: center;
+}
+
+#welcome-text {
+    color: #000000;
+    text-align: center;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+
 }
