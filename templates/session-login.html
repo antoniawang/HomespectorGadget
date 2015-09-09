@@ -1,5 +1,40 @@
+<script>
+	//Switch to table view
+	$(document).ready(function() {
+	    $("#table-view-select").click(function() {
+	        console.log("Make table appear!");
+	        viewState = PageState.TABLE;
+	        $.ajax("/comparison-table").done(function(result) {
+	            $("#contents").html(result);
+	            $("span.glyphicon-check").css("display","inline");
+	            $("span.glyphicon-map-marker").css("display", "none");
+	            $("span.glyphicon-certificate").css("display", "none");
+	            $("span.glyphicon-home").css("display", "none");
+	        }); 
+	    });
+	});
+
+	//Switch to map view
+	$(document).ready(function() {
+	    $("#map-view-select").click(function() {
+
+	        console.log("Make map appear!");
+	        viewState = PageState.MAP;
+	        $.ajax("/default-map").done(function(result) {
+	            $("#contents").html(result);
+	            $("span.glyphicon-check").css("display","none");
+	            $("span.glyphicon-map-marker").css("display", "inline");
+	            $("span.glyphicon-certificate").css("display", "inline");
+	            $("span.glyphicon-home").css("display", "inline");
+	            console.log(viewState);
+	        }); 
+	    });
+	});
+</script>
+
+<li><a href="/#" id="table-view-select">Table View</a></li>
+<li><a href="/#" id="map-view-select">Map View</a></li>
 {% if "user_id" in session %}
-  <li><a href="/users/{{ session['user_id'] }}">Profile</a></li>
   <li><a href="/logout">Logout</a></li>
 {% else %}
   <li><a href="/register">Register</a></li>

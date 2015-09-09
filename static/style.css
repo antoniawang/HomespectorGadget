@@ -131,6 +131,12 @@ thead th {
 #left-col-head {
 	margin-top: 5px;
 	margin-bottom: 5px;
+	padding: 0;
+	color: white;
+}
+
+#left-col-head-cell {
+	padding: 0;
 }
 
 /*Formatting the colors and positions of the glyicons on the left column*/
