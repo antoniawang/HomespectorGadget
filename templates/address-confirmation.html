@@ -13,13 +13,15 @@ $(document).ready(function() {
         $.ajax("/property-list").done(function(result) {
         	$("#left-col").html(result);
           if (viewState == PageState.TABLE) {
-            $.ajax("/comparison-table").done( function(result) {
+            $.ajax("/comparison-table").done(function(result) {
               $("#contents").html(result);
             });
-          } else {
-            $.ajax("/default-map").done( function(result) {
+          } else if (viewState == PageState.MAP) {
+            $.ajax("/default-map").done(function(result) {
               $("#contents").html(result);
               });
+          } else {
+            window.location.replace("/");
           }
     	});
     });
