@@ -14,7 +14,7 @@ A map view automatically maps all the properties stored in the user's session. U
 * Zillow API
 * Leaflet/Mapbox API
 * Foursquare API
-* Walkscore API
+* Walk Score API
 * HTML/CSS
 * Bootstrap
 
