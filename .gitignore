@@ -12,3 +12,6 @@ templates/search-form.html
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+templates/map-test.html
+templates/user.html
+templates/homepage.html

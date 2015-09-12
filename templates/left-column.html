@@ -10,7 +10,6 @@
     // When any user clicks on a property's star
     // Add the record to connect user and property in the UserProperty table
         $("span.glyphicon-star").click(function() { //highlight the star
-            console.log(this);
             $(this).toggleClass("yellow");
             $(this).toggleClass("white");
 
@@ -20,7 +19,6 @@
             datatype:"json",
             data: {'property': $(this).attr("id")} 
             }).done(function() {
-                    console.log("Victory! Fave changed successfully");  // confirm in the console
             });
         });
     });
@@ -31,7 +29,6 @@
 
     $(document).ready(function() { 
         $("span.glyphicon-pushpin").click(function() {    //highlight the star
-            console.log(this);
             var that = this;
             // Send the new property to the database
             $.ajax("/delete-from-session", {
@@ -41,7 +38,6 @@
                 }).done(function() {
                         $(that).removeClass("blue");
                         $(that).addClass("white");
-                        console.log(that.closest('tr'));
                         setTimeout(function(){
                             that.closest('tr').remove();
                         }, 1000);
@@ -56,22 +52,18 @@
                         } else {
                             window.location.replace("/");
                         } 
-                        console.log("Victory! Deleted from session."); // confirm in the console
             });
         });
 
         $("span.glyphicon-check").click(function() {    //highlight the star
-            console.log(this);
             var isBlue = $(this).hasClass("blue");
             var updateData = null;
             var that=this;
             if (!isBlue) {
-                console.log("Add to comparison")
                 updateData = {'zpid':$(this).attr("id"),
                             'is_in_table': false};
             
             } else {
-                console.log("Remove from comparison")
                 updateData = {'zpid':$(this).attr("id"),
                 'is_in_table': true};
 
@@ -83,16 +75,12 @@
                 datatype:"json",
                 data: updateData
                 }).done(function(result) {
-                    console.log("Update table result was: " + result);
                     if (result != "1") {
-                        console.log("Comparison table was NOT updated");
                         alert("Please remove an item from table.")
                     } else {
-                        console.log("Comparison table was updated");
                         $(that).toggleClass("blue");
                         $(that).toggleClass("white");
                         $.ajax("/comparison-table").done( function(result) {
-                            console.log("Got new HTML for the comparison table: " + result);
                             $("#contents").html(result);
                         });
                     }
@@ -101,7 +89,6 @@
         });
         
         $("span.glyphicon-map-marker").click(function() {
-            console.log(this);
             $.ajax("/detailed-map", {
                 method: "POST",
                 datatype: "json",
@@ -113,7 +100,6 @@
         });
 
         $("span.glyphicon-home").click(function() {
-            console.log(this);
             $.ajax("/detailed-map", {
                 method: "POST",
                 datatype: "json",

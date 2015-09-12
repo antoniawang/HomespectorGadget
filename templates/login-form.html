@@ -4,17 +4,13 @@
 //in the login-form.html script
 $(document).ready(function() {
     $("#login-submit").click(function() {
-        console.log("Make login form disappear!");
         $.post("/login", {'email': $("#login-email").val(),
                           'password':$ ("#login-password").val()}).done(function(result) {
-            console.log(result + "PASSWORD!");
             $("#session-login").html(result);
-            console.log("logged in now");
             $.ajax("/property-list").done(function(result) {
                 $("#left-col").html(result);
             });
         });
-        console.log("Logged in");
         $("#login-form").css("display","none");
     });
 });

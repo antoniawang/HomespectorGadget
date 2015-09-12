@@ -2,15 +2,6 @@
 <script src='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
 <style>
-/*  #detail-map {
-    z-index: 1;
-  }
-
-  #map-places-search {
-    z-index: 2;
-  }
-*/
-
 #map-places-search {
     z-index: 1;
     position: absolute;
@@ -37,32 +28,8 @@
   height: 640px;
 }
 
-/*  #detail-map {position:absolute; height:100%; width:100%;}*/
-/*  #pac-input {
-  background-color: #fff;
-  font-family: Roboto;
-  font-size: 15px;
-  font-weight: 300;
-  margin-left: 12px;*/
-/*  padding: 0 11px 0 13px;*/
-/*  text-overflow: ellipsis;*/
-/*  width: 300px;*/
-/*}
-
-#pac-input:focus {
-  border-color: #4d90fe;
-}
-
-.pac-container {
-  font-family: Roboto;
-}*/
-
-
-/*id='detail-map' style="position: absolute; left: 0px; top: 0px; z-index: 1; width: 100%; height: 100%;"
-*/
 </style>
 
-<!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box" autocomplete="off" style="z-index: 0; position: absolute; left: 88px; top: 0px;"> -->
 <div id="places-page">
   <div id="detail-map"></div>
   <div id="narrow-locations-form">
@@ -104,9 +71,7 @@ $("#places-search-submit").click(function(event) {
 });
 
 
-// Create a Foursquare developer account: https://developer.foursquare.com/
-// NOTE: CHANGE THESE VALUES TO YOUR OWN:
-// Otherwise they can be cycled or deactivated with zero notice.
+//Query by user input; default query is "coffee"
 var CLIENT_ID = "{{ FourSqID }}";
 var CLIENT_SECRET = "{{ FourSqSecret }}";
 var QUERY = '{{ query }}'
@@ -123,7 +88,6 @@ var API_ENDPOINT = 'https://api.foursquare.com/v2/venues/search' +
 
 // Keep our place markers organized in a nice group.
 var foursquarePlaces = L.layerGroup().addTo(map);
-console.log("Foursquare Places")
 
 // Use jQuery to make an AJAX request to Foursquare to load markers data.
 $.getJSON(API_ENDPOINT

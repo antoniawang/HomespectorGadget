@@ -29,11 +29,8 @@ $(document).ready(function() {
     $("#login").click(function(){
     //show login form
         $.get("/login", "login-form.html").done(function(results) {
-            console.log("Got" + results);
             var contents = results;
             $("#login-form").html(contents);
-            console.log("Make div appear!"); 
-            // confirm in the console
             $("#login-form").css("display","block");
             $.ajax("/property-list").done(function(result) {
                 $("#left-col").html(result);
@@ -51,11 +48,8 @@ $(document).ready(function() {
     $("#register").click(function(){
     //show registration form
         $.get("/register", "registration-form.html").done(function(results) {
-            console.log("Got" + results);
             var contents = results;
             $("#login-form").html(contents);
-            console.log("Make div appear!"); 
-            // confirm in the console
             $("#login-form").css("display","block");
             $(".modal-login").css("height","100%");
         });
@@ -73,14 +67,11 @@ $(document).ready(function() {
         $("#left-col").html(result);
     }); 
     $("#search-btn").click(function() {
-        console.log("Search!");
 
 // Send the new property to the database
         $.get("/search", {'address-search': $("#address-search").val()}).done(function(results) {
-            console.log("Got" + results);
             var contents = results;
             $("#address-confirm").html(contents);
-            console.log("Make div appear!");    // confirm in the console
             $("#address-confirm").css("display","block");
         });   
     });
@@ -90,8 +81,6 @@ $(document).ready(function() {
 //Switch to map view
 $(document).ready(function() {
     $("#map-view-select").click(function() {
-
-        console.log("Make map appear!");
         viewState = PageState.MAP;
         $.ajax("/default-map").done(function(result) {
             $("#contents").html(result);
@@ -99,7 +88,6 @@ $(document).ready(function() {
             $("span.glyphicon-map-marker").css("display", "inline");
             $("span.glyphicon-certificate").css("display", "inline");
             $("span.glyphicon-home").css("display", "inline");
-            console.log(viewState);
         }); 
     });
 });
@@ -107,7 +95,6 @@ $(document).ready(function() {
 //Switch to table view
 $(document).ready(function() {
     $("#table-view-select").click(function() {
-        console.log("Make table appear!");
         viewState = PageState.TABLE;
         $.ajax("/comparison-table").done(function(result) {
             $("#contents").html(result);

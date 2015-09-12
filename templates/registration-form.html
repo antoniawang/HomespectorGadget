@@ -5,7 +5,6 @@
 $(document).ready(function() {
     $("#registration-submit").click(function(event) {
         event.preventDefault();
-        console.log("Make form disappear!");
         $.ajax({ url: "/register", 
             method: 'POST',
             datatype: 'json',
@@ -17,12 +16,10 @@ $(document).ready(function() {
             'zipcode':$('#register-zipcode').val()}
             })
             .done(function(result) {
-                console.log(result + "Register!");
                 //check if user already registered
                 $("#address-confirm").css("display","block");
                 $("#address-confirm").html(result);
                 });
-            console.log("Logged in");
             $("#login-form").css("display","none");
     });
 });
