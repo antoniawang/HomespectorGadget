@@ -1,18 +1,22 @@
 """Models and database functions for PropShop project."""
 
-import sys
+from datetime import datetime
+import json
 import os
+import requests
+import sqlite3
+import sys
+import urllib
+from urllib2 import Request, urlopen, URLError
+from xml.dom import minidom
+
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.inspection import inspect
 from sqlalchemy.ext.declarative import declarative_base as real_declarative_base
 import xmltodict
-import json
-import requests
-from urllib2 import Request, urlopen, URLError
-from xml.dom import minidom
-import urllib
-from datetime import datetime
-import sqlite3
+
+from utils import handleTok 
 
 # Let's make this a class decorator
 declarative_base = lambda cls: real_declarative_base(cls=cls)
@@ -128,20 +132,6 @@ class Property(db.Model):
     walkscore = db.Column(db.Integer)
     transitscore = db.Column(db.Integer)
 
-    #MAY NOT NEED THESE ATTRIBUTES
-    # z_last_updated = db.Column(db.DateTime)
-    # z_oneWeekChange_deprecated = db.Column(db.Boolean)
-    # z_valueChange = db.Column(db.Integer)
-    # z_valuationRange_low = db.Column(db.Integer)
-    # z_valuationRante_high = db.Column(db.Integer)
-    # z_percentile = db.Column(db.Integer)
-
-    #MAY USE THESE ATTRIBUTES LATER
-    # region_name  = db.Column(db.String(59))
-    # region_id = db.Column(db.String(5)) 
-    # region_type = db.Column(db.String(10))
-    # zindexValue = db.Column(db.Integer) # not sure what this is but we'll leave it in for now
-    # neighborhood_url = db.Column(db.String(100)) 
 
     @staticmethod 
     def generate_from_address(address, citystatezip):
@@ -214,7 +204,6 @@ class Property(db.Model):
                         lastSoldDate=lastSoldDate,
                         lastSoldPrice=lastSoldPrice,
                         z_amount=z_amount
-                        #time_saved=datetime.utcnow()
                         )
         new_property.get_walkscore()
         return new_property, Property.ERROR_OK
@@ -333,39 +322,8 @@ class UserProperty(db.Model):
             self.user_property_id, self.user_id, self.zpid)
 
 
-##############################################################################
-# Helper functions for parsing (from Denise's SunBear Github)
-
-def getText(nodelist):
-    rc = []
-    for node in nodelist:
-        if node.nodeType == node.TEXT_NODE:
-            rc.append(node.data)
-    return ''.join(rc)
-
-
-def handleTok(tokenlist):
-    texts = ""
-    for token in tokenlist:
-        texts += " "+ getText(token.childNodes)
-    return texts
-
-###############################################################
 ###############################################################
 
-###############################################################
-
-# ZILLOW
-
-### DETAILS PER HOUSE ###
-# http://www.zillow.com/howto/api/GetDeepSearchResults.htm
-# input:  address and zip
-# output: lattitude and longitude (could then be inputed into PV WATTS)
-#           valutation range (high and low)
-#           home value index -- avg home value in neighborhood?
-#           ZPID = a zillow id (per house). used for the other zillow APIs.
-#           Tax assessment,Yearbuilt,lotSizeSqFt,finishedSqFt,Bedrooms
-#  *** FIPScounty *** = matches county codes in maps, census data, etc
 
 def get_db_cursor():
     """Return a database cursor"""

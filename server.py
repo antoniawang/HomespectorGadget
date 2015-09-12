@@ -1,30 +1,19 @@
-"""Prop Shop"""
+"""Homespector Gadget"""
 
-from jinja2 import StrictUndefined
+from collections import OrderedDict
+from datetime import datetime
+import os
+# import string
 
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-
-from model import connect_to_db, db, User, Property, UserProperty
-
-import model
-
-from datetime import datetime
-
+from jinja2 import StrictUndefined
 import usaddress
 
-import os
+from model import connect_to_db, db, User, Property, UserProperty
+from utils import RGB_TUPLES, HEX_COLOR_STRINGS, make_marker_text, get_zoom_level
 
-from collections import OrderedDict
-
-import string
-
-import math
-
-import random
-
-import struct
-
+######################################################################################
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -38,24 +27,6 @@ mapbox_api_key = os.environ["MAPBOX_KEY"]
 foursq_clientid = os.environ["FOURSQ_CLIENTID"]
 foursq_clientsecret = os.environ["FOURSQ_CLIENTSECRET"]
 
-##MAKE LIST OF POSSIBLE MARKER COLORS##
-def make_marker_colors():
-
-    rbg_range = range(50, 251, 50)
-    marker_rgb_list = [(r, g, b) for r in rbg_range for b in rbg_range for g in rbg_range]
-
-    random.shuffle(marker_rgb_list)
-
-    marker_hex_list = []
-
-    for rgb_tuple in marker_rgb_list:
-        hex_color_string = struct.pack('BBB', *rgb_tuple).encode('hex')
-        marker_hex_list.append(hex_color_string)
-
-    return marker_rgb_list, marker_hex_list    
-
-
-RGB_TUPLES, HEX_COLOR_STRINGS = make_marker_colors()
 
 ###################################
 # General registration and login #
@@ -174,14 +145,6 @@ def logout():
 
     flash("Logged Out.")
     return redirect("/")
-
-# USE THIS TO CREATE THE MY PROFILE PAGE
-# @app.route("/users/<int:user_id>")
-# def user_detail(user_id):
-#     """Show info about user."""
-
-#     user = User.query.get(user_id)
-#     return render_template("user.html", user=user)
 
 ##########################################################
 # Searching, populating session, side column and table #
@@ -448,61 +411,7 @@ def get_session_lonlats():
 #  generate marker text for an API call of the form:   {name}-{label}+{color}({lon},{lat})
 #  example : pin-l-park+482(-73.975,40.767)
 #   NAME MUST BE pin-l, pin-m or pin-s
-
-
-def make_marker_text(lonlat_tuples_list):
-    """Parse and join the strings that go in the mapbox api call"""
-    used_color_map = session.get('used_color_map', {})
-    marker_text_list = []
-    # color = '84638F'
-    name = 'pin-m'
-    
-    for index, lonlat_tuple in enumerate(lonlat_tuples_list):
-        label = "building"
-        zpid, lon, lat = lonlat_tuple
-    
-        color = used_color_map[str(zpid)]['hex']
-        marker_text = name + '-' + label + '+' + color + '(' + str(lon) + ',' + str(lat) + ')'
-        marker_text_list.append(marker_text)
-
-    return marker_text_list
-
-
-def get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth):
-    """Figure out the optimal zoom level,
-    given the NE, SW bounds(max(lat, lon); min(lat, lon)) 
-    from the list of lon, lat tuples."""
-
-    world_dim = { 'height': 256, 'width': 256 } #always 256 px
-    zoom_max = 21 #max zoom for Mapbox
-
-
-    def lat_radius(lat):
-        sin = math.sin(lat * math.pi / 180);
-        rad_x2 = math.log((1 + sin) / (1 - sin)) / 2
-        return max(min(rad_x2, math.pi), -math.pi) / 2
-
-    def zoom(map_px, world_px, fraction):
-        return math.floor(math.log(map_px / world_px / fraction) / math.log(2))
-
-    # northeast = (lat_max, lon_max)
-    # southwest = (lat_min, lon_min)
-
-    lat_fraction = (lat_radius(lat_max) - lat_radius(lat_min)) / math.pi
-    
-    lon_diff = lon_max - lon_min
-    if (lon_diff < 0):
-        lon_fraction = (lon_diff + 360) / 360
-    else:
-        lon_fraction = (lon_diff / 360)
-
-    lat_zoom = zoom(imgheight, world_dim['height'], lat_fraction)
-    lon_zoom = zoom(imgwidth, world_dim['width'], lon_fraction)
-    
-    zoom = min([lat_zoom, lon_zoom, zoom_max])
-
-    return zoom
-
+#   Text string for API call in util.py
 
 @app.route("/default-map", methods=['GET'])
 def show_default_map():
@@ -557,8 +466,6 @@ def generate_detailed_map():
     this_property = Property.query.filter(Property.zpid == zpid).first()
 
     return render_template("detailed-map.html", house=this_property, color=color, query=query, placeholder_text=query if query is not None else "Search for places, e.g. coffee", MapboxKey=mapbox_api_key, FourSqID=foursq_clientid, FourSqSecret=foursq_clientsecret)
-
-
 
 
 ################################
