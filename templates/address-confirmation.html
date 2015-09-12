@@ -30,23 +30,10 @@ $(document).ready(function() {
 
 //Make the address confimation window disapear when user clicks "No"
 $(document).ready(function() {
-    $("#confirm-no").click(function() {
-        console.log("NO")
-
+    $("#confirm-no").click(function(event) {
+        event.preventDefault();
         $("#address-confirm").css("display","none");
-        $.post("/delete-property", {'Delete-Property': $('#hidden-input').attr("value")}).done(function() {
-          if (viewState == PageState.TABLE) {
-            $.ajax("/comparison-table").done(function(result) {
-              $("#contents").html(result);
-            });
-          } else if (viewState == PageState.MAP) {
-            $.ajax("/default-map").done(function(result) {
-              $("#contents").html(result);
-              });
-          } else {
-            window.location.replace("/");
-          }
-        });
+        $.post("/delete-property", {'Delete-Property': $('#hidden-input').attr("value")});
     });
 });
 

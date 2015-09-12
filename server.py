@@ -216,12 +216,9 @@ def delete_property():
     zpid = request.form['Delete-Property']
 
     props_in_list = session['properties']
-    index = props_in_list(zpid)
+    index = props_in_list.index(zpid)
     if index >=0 :
         props_in_list.pop(index)
-
-
-    flash("Please search again")
 
     return "Deleted"
 
