@@ -16,10 +16,14 @@ $(document).ready(function() {
             'zipcode':$('#register-zipcode').val()}
             })
             .done(function(result) {
-                //check if user already registered
-                $("#address-confirm").css("display","block");
-                $("#address-confirm").html(result);
-                });
+                if (result.length > 0 ) {
+                    $("#address-confirm").css("display","block");
+                    $("#address-confirm").html(result);
+
+                } else {
+                    alert("New user " + $("#register-email").val() + " added!");
+                }
+            });
             $("#login-form").css("display","none");
     });
 });

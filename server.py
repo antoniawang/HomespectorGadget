@@ -56,24 +56,20 @@ def register_process():
 
     user_email = request.form['email']
     user = User.query.filter(User.email == user_email).first()
-    print user, "**********************************************"
 
     if user is None:
         # Get form variables
-        print "IF YOUSER IS NONE****************"
         fname = request.form["fname"]
         lname = request.form["lname"]
         email = request.form["email"]
         password = request.form["password"]
         zipcode = request.form["zipcode"]
-        print "IF YOUSER IS NONE****************2"
 
         new_user = User(fname=fname, lname=lname, email=email, password=password, zipcode=zipcode)
 
         db.session.add(new_user)
         db.session.commit()
 
-        flash("User %s added." % email)
         return ""
 
     else:
