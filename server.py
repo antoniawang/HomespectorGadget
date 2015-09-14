@@ -70,7 +70,7 @@ def register_process():
         db.session.add(new_user)
         db.session.commit()
 
-        return ""
+        return render_template("registration-confirm.html", error_message = "New user %s added." % email)
 
     else:
         return render_template("error-dialog.html", error_message = "This email is already Registered.\n Please login or register with a different email.")

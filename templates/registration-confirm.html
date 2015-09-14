@@ -1,0 +1,22 @@
+{% block content %}
+<script>
+
+//Generic confirmation dialog template
+
+$(document).ready(function() {
+    $("#error-ok").click(function() {
+        console.log("Make div disappear!");
+        $("#address-confirm").css("display","none");
+  });
+});
+
+</script>
+
+<div class="top-right-nav" style="background-color:#BDD684">
+  <br>
+  <h4>  {{ error_message }} </h4>
+  <br>
+  <br>
+<a href="#" id="error-ok" class="btn btn-large btn-primary">Close</a>
+</div>
+{% endblock %}
