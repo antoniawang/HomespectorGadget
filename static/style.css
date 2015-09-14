@@ -148,6 +148,10 @@ thead th {
 	color: white;
 }
 
+.gray {
+	color: rgb(232,248,248);
+}
+
 .yellow {
 	color: #FFCC00;
 }
