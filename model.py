@@ -324,10 +324,10 @@ class UserProperty(db.Model):
 
 ###############################################################
 
-
 def get_db_cursor():
     """Return a database cursor"""
-    conn = sqlite3.connect("propshop.db")
+    mypath = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(os.path.join(mypath, "propshop.db"))
     cursor = conn.cursor()
     return cursor
 
@@ -335,10 +335,14 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///propshop.db'
-    db.app = app
+    dbpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'propshop.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+dbpath
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True  # bug fix for SQLAlchemy misbehaving on Apache servers
+    db.app = app 
     db.init_app(app)
-
+    # ensure that the databases are created for each context
+    with app.app_context():
+        db.create_all()
 
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
