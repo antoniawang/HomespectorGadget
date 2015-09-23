@@ -118,11 +118,11 @@
         <thead>
             <tr><th id="left-col-head-cell">
                 <h3><a id="left-col-head" href="/">Homespector Gadget</a></h3>
-                <span class="glyphicon glyphichon-search" style="z-index:1; font-size:500px; position:absolute"/>
             </th></tr>
 
         </thead>        
         <tbody>
+        {% if properties %}
             <style>
                 {% for house in properties %}
                  {% set this_zpid = house.zpid %}
@@ -180,6 +180,14 @@
             </td>
         </tr>
         {% endfor %}
+        </tbody>
+
+        {% else %}
+        <tbody>
+            <tr><td>
+            <h4 id="instruction-text">Explore homes with a simple address search. Switch between table view and map view. Register and login to save your favorites.</h4>
+        {% endif %}
+            </td></tr>
         </tbody>
     </table>
 {% endblock %}
