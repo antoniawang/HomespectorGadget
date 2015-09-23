@@ -1,4 +1,4 @@
-"""Models and database functions for PropShop project."""
+"""Models and database functions for Homespector Gadget project."""
 
 from datetime import datetime
 import json
@@ -52,7 +52,7 @@ class User(db.Model):
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(64), nullable=True)
-    password = db.Column(db.String(64), nullable=True)
+    pw_hash = db.Column(db.String(64), nullable=True)
     fname = db.Column(db.String(20), nullable=True)
     lname = db.Column(db.String(20), nullable=True)
     zipcode = db.Column(db.String(5), nullable=True)
@@ -340,7 +340,7 @@ class UserProperty(db.Model):
 def get_db_cursor():
     """Return a database cursor"""
     mypath = os.path.dirname(os.path.abspath(__file__))
-    conn = sqlite3.connect(os.path.join(mypath, "propshop.db"))
+    conn = sqlite3.connect(os.path.join(mypath, "homespector.db"))
     cursor = conn.cursor()
     return cursor
 
@@ -348,7 +348,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    dbpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'propshop.db')
+    dbpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'homespector.db')
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+dbpath
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True  # bug fix for SQLAlchemy misbehaving on Apache servers
     db.app = app 

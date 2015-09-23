@@ -66,7 +66,6 @@ def register_process():
         zipcode = request.form["zipcode"]
 
         new_user = User(fname=fname, lname=lname, email=email, password=password, zipcode=zipcode)
-        new_user.pw_hash
 
         db.session.add(new_user)
         db.session.commit()
