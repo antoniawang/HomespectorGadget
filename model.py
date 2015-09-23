@@ -44,6 +44,9 @@ class User(db.Model):
     def __init__(self, email=None, password=None, fname=None, lname=None, zipcode=None):
         self.email = email
         self.set_password(password)
+        self.fname = fname
+        self.lname = lname
+        self.zipcode = zipcode
 
     __tablename__ = "users"
 
@@ -62,7 +65,6 @@ class User(db.Model):
 
     def __repr__(self):
         """Provide helpful representation when printed."""
-
         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
 
 
