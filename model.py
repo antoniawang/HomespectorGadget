@@ -14,6 +14,7 @@ from xml.dom import minidom
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.inspection import inspect
 from sqlalchemy.ext.declarative import declarative_base as real_declarative_base
+from werkzeug.security import generate_password_hash, check_password_hash
 import xmltodict
 
 from utils import handleTok 
@@ -38,7 +39,11 @@ def getAttributes(clazz):
 # Model definitions
 
 class User(db.Model):
-    """User of the PropShop website."""
+    """User of the Homespector Gadget website."""
+
+    def __init__(self, email=None, password=None, fname=None, lname=None, zipcode=None):
+        self.email = email
+        self.set_password(password)
 
     __tablename__ = "users"
 
@@ -49,6 +54,12 @@ class User(db.Model):
     lname = db.Column(db.String(20), nullable=True)
     zipcode = db.Column(db.String(5), nullable=True)
 
+    def set_password(self, password):
+        self.pw_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.pw_hash, password)
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -56,7 +67,7 @@ class User(db.Model):
 
 
 class Property(db.Model):
-    """Property on PropShop website.
+    """Property on Homespector Gadget website.
     A wrapper object that corresponds to rows in the properties table.
     """
 

@@ -66,6 +66,7 @@ def register_process():
         zipcode = request.form["zipcode"]
 
         new_user = User(fname=fname, lname=lname, email=email, password=password, zipcode=zipcode)
+        new_user.pw_hash
 
         db.session.add(new_user)
         db.session.commit()
@@ -97,7 +98,8 @@ def login_process():
         flash("No such user. Please register an account.")
         return redirect("/register")
 
-    if user.password != password:
+    # if user.password != password:
+    if not user.check_password(password):
         flash("Incorrect password")
         return redirect("/login")
 
@@ -473,3 +475,6 @@ if __name__ == "__main__":
     DebugToolbarExtension(app)
 
     app.run()
+
+else:
+    connect_to_db(app)
