@@ -6,6 +6,7 @@ import random
 import struct
 
 from flask import session
+import usaddress
 
 # ZILLOW
 
@@ -32,6 +33,29 @@ def handleTok(tokenlist):
     for token in tokenlist:
         texts += " "+ getText(token.childNodes)
     return texts
+
+
+#Parse the search text into address components
+def create_address_url(raw_address_text):
+    raw_address_parsed = usaddress.tag(raw_address_text)
+    address_ordered_dict = raw_address_parsed[0]
+    
+    address_keys = ['AddressNumber','StreetName','StreetNamePostType','OccupancyType','OccupancyIdentifier']
+    address_string_list=[]
+    for key in address_keys:
+        if address_ordered_dict.get(key) is not None:
+            address_string_list.append(address_ordered_dict[key])
+    address_string = ' '.join(address_string_list)
+    address_url_encode = address_string.replace(' ','+').strip()
+    
+    citystatezip_string = address_ordered_dict.get('PlaceName','')
+    citystatezip_string += '%2C ' + address_ordered_dict.get('StateName','')
+    citystatezip_string += ' ' + address_ordered_dict.get('ZipCode','')
+    citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
+
+    address_for_walkscore = address_url_encode + "," + citystatezip_url_encode
+
+    return address_url_encode, citystatezip_url_encode, address_for_walkscore
 
 
 ##MAKE LIST OF POSSIBLE MARKER COLORS##

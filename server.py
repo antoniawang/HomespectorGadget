@@ -8,10 +8,9 @@ import os
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
-import usaddress
 
 from model import connect_to_db, db, User, Property, UserProperty
-from utils import RGB_TUPLES, HEX_COLOR_STRINGS, make_marker_text, get_zoom_level
+from utils import create_address_url, RGB_TUPLES, HEX_COLOR_STRINGS, make_marker_text, get_zoom_level
 
 ######################################################################################
 app = Flask(__name__)
@@ -114,7 +113,6 @@ def login_process():
     for zpid in liked:
         if str(zpid) not in session['used_color_map']:
             rgb_tuple = RGB_TUPLES.pop()
-            print "Prepopulating color map with", rgb_tuple
             r,g,b = rgb_tuple
             hex_color_string = HEX_COLOR_STRINGS.pop()
             color_map = {'r': r, 'g': g, 'b': b, 'hex': hex_color_string}
@@ -122,8 +120,6 @@ def login_process():
 
 
     flash("Hello, %s!" % user.fname)
-
-    print session["user_id"], "********************************"
 
     return render_template("session-login.html", session=session)
 
@@ -152,30 +148,8 @@ def parse_address_search():
     """Parses the address for API call"""
     if request.args:
         raw_address_text = request.args.get("address-search")
-        print "raw_address_text", raw_address_text, "$$$$$$$$$$$$$$$"
-    raw_address_parsed = usaddress.tag(raw_address_text)
-    print "raw_address_parsed", raw_address_parsed, "$$$$$$$$$$$$$$$"
-    address_ordered_dict = raw_address_parsed[0]
-    print "address_ordered_dict", address_ordered_dict, "$$$$$$$$$$$$$$$"
-    
-    address_keys = ['AddressNumber','StreetName','StreetNamePostType','OccupancyType','OccupancyIdentifier']
-    address_string_list=[]
-    for key in address_keys:
-        if address_ordered_dict.get(key) is not None:
-            address_string_list.append(address_ordered_dict[key])
-    address_string = ' '.join(address_string_list)
-    print "address_string", address_string, "$$$$$$$$$$$$$$$"
-    address_url_encode = address_string.replace(' ','+').strip()
-    print "address url encode is", address_url_encode, "$$$$$$$$$$$$$$$"
-    
-    citystatezip_string = address_ordered_dict.get('PlaceName','')
-    citystatezip_string += '%2C ' + address_ordered_dict.get('StateName','')
-    citystatezip_string += ' ' + address_ordered_dict.get('ZipCode','')
-    citystatezip_url_encode = citystatezip_string.strip().replace(' ','+')
 
-    address_for_walkscore = address_url_encode + "," + citystatezip_url_encode
-    print address_for_walkscore
-
+    address_url_encode, citystatezip_url_encode, address_for_walkscore = create_address_url(raw_address_text)
 
     property_from_url, error_code = Property.generate_from_address(address=address_url_encode,
                         citystatezip=citystatezip_url_encode) 
@@ -220,7 +194,6 @@ def delete_property():
     return "Deleted"
 
 
-
 @app.route("/property-list", methods=['GET'])
 def get_propeties_list():
     """Have user confirm the search results.
@@ -246,7 +219,6 @@ def get_propeties_list():
             properties.append(house_data)
             if str(zpid) not in used_color_map:
                 rgb_tuple = RGB_TUPLES.pop()
-                print rgb_tuple
                 r,g,b = rgb_tuple
                 hex_color_string = HEX_COLOR_STRINGS.pop()
                 color_map = {'r': r, 'g': g, 'b': b, 'hex': hex_color_string}
@@ -261,7 +233,6 @@ def get_propeties_list():
         results = db.session.query(UserProperty.zpid).filter_by(user_id=user_id).all()
         liked = [zpid for (zpid, ) in results]
 
-    print session.get('comp_table',[]),"$$$$$$$$$$$$$$$"
     props_in_table = [int(x) for x in session.get('comp_table',[])]
 
     return render_template("left-column.html", properties=properties, liked=liked, props_in_table=props_in_table, used_color_map=used_color_map)
@@ -311,7 +282,6 @@ def delete_from_session():
     used_color_map = session.get('used_color_map',{})
 
     zpid = request.form.get('property') 
-    print "zpid is: ", zpid, "and type: ", type(zpid), "$$$$$$$$$$"
 
     if zpid in props_in_list:
         zpid_index = props_in_list.index(zpid)
@@ -323,14 +293,11 @@ def delete_from_session():
             RGB_TUPLES.append(rgb_tuple)
             HEX_COLOR_STRINGS.append(hex_color_string)
             del used_color_map[str(zpid)]
-            print "deleted from colormap", zpid, used_color_map
 
     zpids_in_table = session.get('comp_table',[])
     if zpid in zpids_in_table:
         zpid_index2 = zpids_in_table.index(zpid)
         zpids_in_table.pop(zpid_index2) 
-
-
 
     return "Victory"
 
@@ -390,7 +357,6 @@ def get_session_lonlats():
     lonlat_list = []
 
     props_in_list = session.get('properties',[])
-    print "session['properties'] is ", props_in_list
     for zpid in props_in_list:
         this_house = Property.query.filter(Property.zpid == int(zpid)).first()
         longitude = this_house.longitude
@@ -449,7 +415,6 @@ def show_default_map():
 
 @app.route("/detailed-map", methods=['POST'])
 def generate_detailed_map():
-    print "Detailed map app route is running."
     zpid = request.form.get('property')
     query = request.form.get('query')
     
