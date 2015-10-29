@@ -43,7 +43,7 @@ $(document).ready(function() {
 
 
 //REGISTER
-//Makde register modal appear
+//Make register modal appear
 $(document).ready(function() {
     $("#register").click(function(){
     //show registration form

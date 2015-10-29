@@ -6,10 +6,23 @@ $(document).ready(function() {
     $("#login-submit").click(function() {
         $.post("/login", {'email': $("#login-email").val(),
                           'password':$ ("#login-password").val()}).done(function(result) {
-            $("#session-login").html(result);
-            $.ajax("/property-list").done(function(result) {
-                $("#left-col").html(result);
-            });
+            if (result == "register") {
+                $.get("/show-error", {'message': 'User does not exist. Please register!'}).done(function(resp) {
+                    $("#address-confirm").css("display","block");
+                    $("#address-confirm").html(resp);
+                });
+                console.log("user must register");
+            } else if (result == "incorrectlogin") {
+                $.get("/show-error", {'message': 'Incorrect username or password'}).done(function(resp) {
+                    $("#address-confirm").css("display","block");
+                    $("#address-confirm").html(resp);
+                });
+            } else {              
+                $("#session-login").html(result);
+                $.ajax("/property-list").done(function(result) {
+                    $("#left-col").html(result);
+                });
+            }
         });
         $("#login-form").css("display","none");
     });

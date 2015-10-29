@@ -94,12 +94,12 @@ def login_process():
 
     if not user:
         flash("No such user. Please register an account.")
-        return redirect("/register")
+        return "register"
 
     # if user.password != password:
     if not user.check_password(password):
         flash("Incorrect password")
-        return redirect("/login")
+        return "incorrectlogin"
 
     session["user_id"] = user.user_id
 
@@ -173,10 +173,12 @@ def parse_address_search():
         return render_template("address-confirmation.html", house=this_property)
 
     elif error_code == Property.ERROR_MANY:
-        return render_template("error-dialog.html", error_message = "Ambiguous Result. Please check your address and specify a unique property.")
+        message = "Ambiguous Result. Please check your address and specify a unique property."
+        return error_message_utility(message)
 
     else:
-        return render_template("error-dialog.html", error_message = "No property found. Please search again.")
+        message = "No property found. Please search again."
+        return error_message_utility(message)
 
 
 @app.route("/delete-property", methods=['POST'])
@@ -193,6 +195,12 @@ def delete_property():
 
     return "Deleted"
 
+
+@app.route("/show-error", methods=['GET'])
+def error_message_utility(message = None):
+    if message is None:
+        message = request.args.get('message', "")
+    return render_template("error-dialog.html", error_message = message)
 
 @app.route("/property-list", methods=['GET'])
 def get_propeties_list():
