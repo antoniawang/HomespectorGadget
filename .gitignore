@@ -15,3 +15,5 @@ templates/search-form.html
 templates/map-test.html
 templates/user.html
 templates/homepage.html
+*xlsx
+*.key

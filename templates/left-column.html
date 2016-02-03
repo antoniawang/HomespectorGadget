@@ -88,27 +88,27 @@
             });
         });
         
-        $("span.glyphicon-map-marker").click(function() {
-            $.ajax("/detailed-map", {
-                method: "POST",
-                datatype: "json",
-                data: {'property':$(this).attr("id"),
-                        'query': 'coffee'}
-            }).done(function(result) {
-                $("#contents").html(result);
-            });
-        });
+        // $("span.glyphicon-map-marker").click(function() {
+        //     $.ajax("/detailed-map", {
+        //         method: "POST",
+        //         datatype: "json",
+        //         data: {'property':$(this).attr("id"),
+        //                 'query': 'coffee'}
+        //     }).done(function(result) {
+        //         $("#contents").html(result);
+        //     });
+        // });
 
-        $("span.glyphicon-home").click(function() {
-            $.ajax("/detailed-map", {
-                method: "POST",
-                datatype: "json",
-                data: {'property':$(this).attr("id"),
-                        'query': 'coffee'}
-            }).done(function(result) {
-                $("#contents").html(result);
-            });
-        });
+        // $("span.glyphicon-home").click(function() {
+        //     $.ajax("/detailed-map", {
+        //         method: "POST",
+        //         datatype: "json",
+        //         data: {'property':$(this).attr("id"),
+        //                 'query': 'coffee'}
+        //     }).done(function(result) {
+        //         $("#contents").html(result);
+        //     });
+        // });
     });
 //Change check to a color bar in map view. When property is on the map, have it be opaque (set alpha value in RGBA to 1),
 //If not in view, change transparency to 0.5 (RGBA)
@@ -170,7 +170,7 @@
                 Add to comparison table
                 {% endif %}" style="display:none;"></span> 
                 <div style="width:2em;height2em;position:relative;display:inline-block;">
-                    <span class="glyphicon glyphicon-map-marker z{{ this_zpid }}-color" id="{{ house.zpid }}" aria-hidden="true" title="Show detailed map" style="display:none;" z-index="1"/>
+                    <span class="glyphicon glyphicon-map-marker z{{ this_zpid }}-color" id="{{ house.zpid }}" aria-hidden="true" style="display:none;" z-index="1"/>
                     <span class="glyphicon glyphicon-certificate z{{ this_zpid }}-color" aria-hidden="true" style="margin-top:2.25px; margin-left:6.5px;position:absolute;display:none;" id="{{ house.zpid }}" z-index="2"/>
                     <span class="glyphicon glyphicon-home" aria-hidden="true" style="color:#FFFFFF;margin-top:4px; margin-left:6.5px;position:absolute;display:none;" id="{{ house.zpid }}" z-index='3'/>
                 </div>

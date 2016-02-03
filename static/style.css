@@ -22,7 +22,7 @@ div#left-col {
 	margin-left: 20%;
 	height: 100%;
 	width: 80%;
-	background-color: white;
+	background-color: #F6FFE0;
 }
 
 .modal {
@@ -48,6 +48,18 @@ width: 500px;
 .modal-confirm {
 	height: 60%;
 	width: 50%;
+}
+
+.my-callout {
+width: 300px;
+height: 200px;
+position: absolute;
+top: 0;
+right: 50%;
+background-color: #E2F0D6;
+color: black;
+/*make it bounce animation*/
+
 }
 
 .modal-login {

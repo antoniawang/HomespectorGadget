@@ -389,36 +389,40 @@ def show_default_map():
     then allow to zoom in on properties to show pindrops
     or heat maps"""
 
-    lonlat_tuples = get_session_lonlats()
+    if len(session['properties']) > 0:
 
-    marker_string_list = make_marker_text(lonlat_tuples)
+        lonlat_tuples = get_session_lonlats()
 
-    marker_api_string = ",".join(marker_string_list)
+        marker_string_list = make_marker_text(lonlat_tuples)
 
-    imgwidth = 1024
-    imgheight = 650
+        marker_api_string = ",".join(marker_string_list)
 
-    #calculate map centers
-    lon_center = sum([float(lon) for zpid, lon, lat in lonlat_tuples])/len(lonlat_tuples)
-    lat_center = sum([float(lat) for zpid, lon, lat in lonlat_tuples])/len(lonlat_tuples)
+        imgwidth = 1024
+        imgheight = 650
 
-    #calculate bounds with max and mins
-    lon_max =  max([float(lon) for zpid, lon, lat in lonlat_tuples])
-    lon_min =  min([float(lon) for zpid, lon, lat in lonlat_tuples])
-    lat_max =  max([float(lat) for zpid, lon, lat in lonlat_tuples])
-    lat_min =  min([float(lat) for zpid, lon, lat in lonlat_tuples])
+        #calculate map centers
+        lon_center = sum([float(lon) for zpid, lon, lat in lonlat_tuples])/len(lonlat_tuples)
+        lat_center = sum([float(lat) for zpid, lon, lat in lonlat_tuples])/len(lonlat_tuples)
 
-    zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth) if len(lonlat_tuples) > 1 else 21
+        #calculate bounds with max and mins
+        lon_max =  max([float(lon) for zpid, lon, lat in lonlat_tuples])
+        lon_min =  min([float(lon) for zpid, lon, lat in lonlat_tuples])
+        lat_max =  max([float(lat) for zpid, lon, lat in lonlat_tuples])
+        lat_min =  min([float(lat) for zpid, lon, lat in lonlat_tuples])
 
-    lon_lat_zoom = str(lon_center) + ',' + str(lat_center) + ',' + str(zoom_level)
+        zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth) if len(lonlat_tuples) > 1 else 21
 
-    imgsize = str(imgwidth) + 'x' + str(imgheight)
+        lon_lat_zoom = str(lon_center) + ',' + str(lat_center) + ',' + str(zoom_level)
 
-    # mapbox_api_key = 'pk.eyJ1IjoiYW50b25pYXdhbmciLCJhIjoiNTc1OGJmMDZlNjQ4ZjlhMmRkZTU4ZGMwOTMxZDg2ODAifQ.nVRLoueu9vmdpYYDc_-zgg'
+        imgsize = str(imgwidth) + 'x' + str(imgheight)
 
-    new_src = 'https://api.mapbox.com/v4/mapbox.streets/' + marker_api_string + '/' + lon_lat_zoom + '/' + imgsize + '.png?access_token=' + mapbox_api_key
+        new_src = 'https://api.mapbox.com/v4/mapbox.streets/' + marker_api_string + '/' + lon_lat_zoom + '/' + imgsize + '.png?access_token=' + mapbox_api_key
 
-    return render_template("map.html", imgwidth=imgwidth, imgheight=imgheight, src=new_src)
+        return render_template("map.html", imgwidth=imgwidth, imgheight=imgheight, src=new_src)
+    else:
+        flash("Please add at least one property to map.")
+        return("Please add at least one property to map.")
+
 
 
 @app.route("/detailed-map", methods=['POST'])
