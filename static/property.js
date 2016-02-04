@@ -14,6 +14,14 @@ var viewState = PageState.INDEX;
 
 //HOMEPAGE
 $(document).ready(function() {
+    //Make callout disappear
+    $("#my-callout").click(function() {
+        $("#my-callout").hide();
+    });
+
+    $("#address-search").click(function() {
+        $("#my-callout").hide();
+    });
     $(this).load(function(){
         viewState = PageState.INDEX;
         $.ajax("/homepage").done(function(result) {
@@ -21,6 +29,7 @@ $(document).ready(function() {
         });
     });
 });
+
 
 
 //LOGIN

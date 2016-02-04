@@ -410,7 +410,7 @@ def show_default_map():
         lat_max =  max([float(lat) for zpid, lon, lat in lonlat_tuples])
         lat_min =  min([float(lat) for zpid, lon, lat in lonlat_tuples])
 
-        zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth) if len(lonlat_tuples) > 1 else 21
+        zoom_level = get_zoom_level(lat_max, lat_min, lon_max, lon_min, imgheight, imgwidth) if len(lonlat_tuples) > 1 else 16
 
         lon_lat_zoom = str(lon_center) + ',' + str(lat_center) + ',' + str(zoom_level)
 
@@ -420,8 +420,7 @@ def show_default_map():
 
         return render_template("map.html", imgwidth=imgwidth, imgheight=imgheight, src=new_src)
     else:
-        flash("Please add at least one property to map.")
-        return("Please add at least one property to map.")
+        return("<div id='map-error'><br><b>Please add at least one property to your list to map.</b><div>")
 
 
 
