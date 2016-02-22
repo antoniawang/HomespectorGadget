@@ -243,7 +243,9 @@ def get_propeties_list():
 
     props_in_table = [int(x) for x in session.get('comp_table',[])]
 
-    return render_template("left-column.html", properties=properties, liked=liked, props_in_table=props_in_table, used_color_map=used_color_map)
+    page_state = request.args.get('view-state', 0)
+
+    return render_template("left-column.html", properties=properties, liked=liked, props_in_table=props_in_table, used_color_map=used_color_map, page_state=int(page_state))
 
 
 @app.route("/add-favorites", methods=['POST'])

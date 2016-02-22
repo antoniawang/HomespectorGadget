@@ -10,7 +10,7 @@ $(document).ready(function() {
     var alreadyLoadedMap = false;
     $("#confirm-yes").click(function() {
         $("#address-confirm").css("display","none");
-        $.ajax("/property-list").done(function(result) {
+        $.get("/property-list", {'view-state': viewState}).done(function(result) {
         	$("#left-col").html(result);
           if (viewState == PageState.TABLE) {
             $.ajax("/comparison-table").done(function(result) {
