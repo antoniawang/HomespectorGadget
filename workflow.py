@@ -41,7 +41,7 @@ if __name__ == "__main__":
 			if check_uncommitted_changes() != 0:
 				print "uncommitted changes detected"
 				sys.exit(404)
-			retcode = subprocess.call("git push orign master")
+			retcode = subprocess.call(["git", "push", "origin", "master"])
 			if retcode == 0:
 				print "submitted"
 			else:
