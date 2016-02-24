@@ -32,4 +32,9 @@ if __name__ == "__main__":
 		print test, "had result", result
 	if all(result == 0 for result in results):
 		print "all tests passed"
-
+		if args.submit:
+			retcode = subprocess.call("git push orign master")
+			if retcode == 0:
+				print "submitted"
+			else:
+				print "something went wrong with submission"
