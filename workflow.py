@@ -3,10 +3,15 @@ import argparse
 import os
 import glob
 import subprocess
+import sys
 
 def invoke_test(test):
 	with open('/dev/null', 'w') as nullout:
 		retcode = subprocess.call(["python", "-v", test], stderr=nullout)
+	return retcode
+
+def check_uncommitted_changes():
+	retcode = subprocess.call(["git", "diff", "--quiet", "HEAD"])
 	return retcode
 
 if __name__ == "__main__":
@@ -33,6 +38,9 @@ if __name__ == "__main__":
 	if all(result == 0 for result in results):
 		print "all tests passed"
 		if args.submit:
+			if check_uncommitted_changes() != 0:
+				print "uncommitted changes detected"
+				sys.exit(404)
 			retcode = subprocess.call("git push orign master")
 			if retcode == 0:
 				print "submitted"
