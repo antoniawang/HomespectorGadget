@@ -2,9 +2,7 @@
 env
 *pyc
 ZillowNeighborhoods-CA/
-test/
 *OLD*
-seed.py
 *.db
 templates/search-form.html
 # Elastic Beanstalk Files
